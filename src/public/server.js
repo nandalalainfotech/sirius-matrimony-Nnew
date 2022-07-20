@@ -12,9 +12,9 @@ app.listen(PORT, "0.0.0.0", function() {
 //  app.use(express.static(distDir));
 
 
-var reqTimer = setTimeout(function wakeUp() {
-    // request("https://nameless-gorge-19527.herokuapp.com", function() {
-    //    console.log("WAKE UP DYNO");
-    // });
-    return reqTimer = setTimeout(wakeUp, 1200000);
- }, 1200000);
+// var reqTimer = setTimeout(function wakeUp() {
+//     // request("https://nameless-gorge-19527.herokuapp.com", function() {
+//     //    console.log("WAKE UP DYNO");
+//     // });
+//     return reqTimer = setTimeout(wakeUp, 1200000);
+//  }, 1200000);
