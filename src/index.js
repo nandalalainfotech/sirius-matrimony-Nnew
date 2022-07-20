@@ -687,45 +687,45 @@ db.mongoose
     })
     .then(() => {
 
-        //     console.log(`Successfully connect to MongoDB .`);
-        //     if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
+            console.log(`Successfully connect to MongoDB .`);
+            if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 
-        //     // not need
-        //     // dotenv.config({ path: `${__dirname}/../env/.env.${process.env.NODE_ENV.trim()}` });
-        //     // this.app = express();
-        //     // this.middlewares();
+            // not need
+            // dotenv.config({ path: `${__dirname}/../env/.env.${process.env.NODE_ENV.trim()}` });
+            // this.app = express();
+            // this.middlewares();
 
-        //     // not need
+            // not need
 
-        //     app.get('/', (req, res) => {
-        //         res.sendFile('index.html', { root: path.resolve(path.dirname('./src/public/dist/sirius')) });
-        //     });
+            app.get('/', (req, res) => {
+                res.sendFile('index.html', { root: path.resolve(path.dirname('./src/public/dist/sirius')) });
+            });
 
-        //     app.get('*', (req, res) => {
-        //         res.sendFile(path.resolve(path.dirname('./src/public/dist/sirius')));
-        //     })
+            app.get('*', (req, res) => {
+                res.sendFile(path.resolve(path.dirname('./src/public/dist/sirius')));
+            })
 
-        //     initial();
-        //     app.listen(PORT, () => {
-        //         console.log(`Server is running on port ${PORT}.`);
-        //     });
-        // })
-        // .catch((err) => {
-        //     console.error("Connection error", err);
-        //     process.exit();
-        // });
-
-
-        console.log(`Successfully connect to MongoDB .`);
-        initial();
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}.`);
+            initial();
+            app.listen(PORT, () => {
+                console.log(`Server is running on port ${PORT}.`);
+            });
+        })
+        .catch((err) => {
+            console.error("Connection error", err);
+            process.exit();
         });
-    })
-    .catch((err) => {
-        console.error("Connection error", err);
-        process.exit();
-    });
+
+
+    //     console.log(`Successfully connect to MongoDB .`);
+    //     initial();
+    //     app.listen(PORT, () => {
+    //         console.log(`Server is running on port ${PORT}.`);
+    //     });
+    // })
+    // .catch((err) => {
+    //     console.error("Connection error", err);
+    //     process.exit();
+    // });
 
 
 
