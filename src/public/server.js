@@ -8,8 +8,6 @@ app.listen(PORT, "0.0.0.0", function() {
 // var distDir = __dirname + "/dist/";
 //  app.use(express.static(distDir));
 
-var distDir = __dirname + "./src/public/dist/sirius";
- app.use(express.static(distDir));
 
 
 
