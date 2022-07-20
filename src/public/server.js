@@ -8,6 +8,13 @@ app.listen(PORT, "0.0.0.0", function() {
 // var distDir = __dirname + "/dist/";
 //  app.use(express.static(distDir));
 
+// var distDir = __dirname + "./src/public/dist/sirius";
+//  app.use(express.static(distDir));
 
 
-
+var reqTimer = setTimeout(function wakeUp() {
+    // request("https://nameless-gorge-19527.herokuapp.com", function() {
+    //    console.log("WAKE UP DYNO");
+    // });
+    return reqTimer = setTimeout(wakeUp, 1200000);
+ }, 1200000);
