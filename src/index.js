@@ -49,7 +49,7 @@ if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 // dotenv.config({ path: `${__dirname}/../env/.env.${process.env.NODE_ENV.trim()}` });
 
 app.get('/', (req, res) => {
-    // res.sendFile('index.html', { root: `${__dirname}/public/dist/sirius` });
+    res.sendFile('index.html', { root: `${__dirname}/public/dist/sirius` });
     // res.sendFile('index.html', { root: `${sirius-matrimony-nnew}/public/dist/sirius` });
 });
 
