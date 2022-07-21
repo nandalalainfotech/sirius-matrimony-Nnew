@@ -55,9 +55,6 @@ app.get('/', (req, res) => {
     res.sendFile('index.html', { root: `${__dirname}/public/dist/sirius` });
 });
 
-// if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
-// // dotenv.config({ path: `${__dirname}/../env/.env.${process.env.NODE_ENV.trim()}` });
-
 // // this.middlewares();
 // app.get('/', (req, res) => {
 //     //   res.sendFile('index.html', { root: `${__dirname}/public/dist/omega` });
@@ -88,6 +85,7 @@ app.get('/', (req, res) => {
 // needed
 //  checking
 
+const __dirname = path.dirname(__filename);
 
 
 app.use(cors());
