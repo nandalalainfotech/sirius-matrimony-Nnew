@@ -76,12 +76,6 @@ app.get('*', (req, res) => {
 app.use(express.json());
 
 // not needed
-app.get('/', (req, res) => {
-    res.send('Backend welcomes you');
-
-    // res.sendFile(path.join(__dirname, 'public/src/index.html'));
-});
-
 // needed
 //  checking
 
