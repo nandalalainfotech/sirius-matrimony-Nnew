@@ -43,9 +43,13 @@ import upload from "../src/middleware/upload.js";
 import videoUpload from "../src/middleware/videoupload.js";
 import audio from "../src/middleware/audio.js";
 
+import {fileURLToPath} from 'url';
+
 const app = express();
 
 // Checking
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 // dotenv.config({ path: `${__dirname}/../env/.env.${process.env.NODE_ENV.trim()}` });
