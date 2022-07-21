@@ -56,7 +56,9 @@ if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 
 app.get('/', (req, res) => {
 
-    res.sendFile('index.html', { root: `{__dirname}/public/dist/sirius` });
+	// res.sendFile('index.html', { root: `${__dirname}/public/dist/sirius` });
+
+    res.sendFile('index.html', { root: `${__dirname}/public/dist/sirius`});
 
 	// root: path.resolve(path.dirname
 });
