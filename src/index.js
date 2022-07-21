@@ -35,7 +35,7 @@ import paymentcontroller from "../src/controllers/paymentcontroller.js";
 import verifyToken from "../src/middleware/auth.js";
 import nodemailer from "nodemailer";
 import hbs from "nodemailer-express-handlebars";
-import path from "path";
+import path, { dirname } from "path";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import rolebaseauth from "../src/middleware/roleauth.js";
@@ -44,8 +44,11 @@ import videoUpload from "../src/middleware/videoupload.js";
 import audio from "../src/middleware/audio.js";
 
 import {fileURLToPath} from 'url';
+// import { dirname } from '';
+import {dirname} from "express";
 
 const app = express();
+
 
 // Checking
 const __filename = fileURLToPath(import.meta.url);
