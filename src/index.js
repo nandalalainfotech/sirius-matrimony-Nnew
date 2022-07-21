@@ -698,9 +698,6 @@ db.mongoose
             // not need
 
             // not need
-        var distDir = __dirname + "./src/public/dist/sirius";
-        app.use(express.static(distDir));
-
             // not need
 
         app.get('/', (req, res) => {
