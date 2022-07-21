@@ -53,15 +53,6 @@ const __filename = fileURLToPath(import.meta.url);
 
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 
-
-
-// // this.middlewares();
-// app.get('/', (req, res) => {
-//     //   res.sendFile('index.html', { root: `${__dirname}/public/dist/omega` });
-//     res.sendFile(path.resolve(path.dirname('./src/public/dist/sirius')));
-// });
-
-
 app.use(express.static(path.resolve(path.dirname('./src/public/dist/sirius'))));
 
 app.use(express.json({ limit: '500mb' }));
