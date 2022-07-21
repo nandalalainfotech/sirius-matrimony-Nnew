@@ -1,49 +1,50 @@
+import bcrypt from "bcryptjs";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import db from "../src/models/main.js";
-import countrycontroller from "../src/controllers/countrycontroller.js";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import hbs from "nodemailer-express-handlebars";
+import path from "path";
+import swaggerjsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import audiocontroller from "../src/controllers/audiocontroller.js";
 import categorydetailcontroller from "../src/controllers/categorydetailscontroller.js";
+import citycontroller from "../src/controllers/citycontroller.js";
 import companydetailscontroller from "../src/controllers/companydetailscontroller.js";
 import contentmastercontroller from "../src/controllers/contentmastercontroller.js";
+import countrycontroller from "../src/controllers/countrycontroller.js";
 import languagecontroller from "../src/controllers/languagecontroller.js";
+import logincontroller from "../src/controllers/logincontroller.js";
+import paymentcontroller from "../src/controllers/paymentcontroller.js";
+import personcontroller from "../src/controllers/personcontroller.js";
+import photocontroller from "../src/controllers/photocontroller.js";
 import regionaldetailscontroller from "../src/controllers/regionaldetailscontroller.js";
 import religioncontroller from "../src/controllers/religioncontroller.js";
-import subscribercontentcontroller from "../src/controllers/subscribercontentcontroller.js";
+import reviewcontroller from "../src/controllers/reviewcontroller.js";
+import rolecontroller from "../src/controllers/rolecontroller.js";
 import statecontroller from "../src/controllers/statecontroller.js";
 import subcatclassificationcontroller from "../src/controllers/subcatclassificationcontroller.js";
 import subcategorycontroller from "../src/controllers/subcategorycontroller.js";
 import subscribercontentauthcontroller from "../src/controllers/subscribercontentauthcontroller.js";
+import subscribercontentcontroller from "../src/controllers/subscribercontentcontroller.js";
+import subscriberdetailscontroller from "../src/controllers/subscriberdetailscontroller.js";
 import subscriberpersonalinfocontroller from "../src/controllers/subscriberpersonalinfocontroller.js";
 import subscriberprofessionalinfocontroller from "../src/controllers/subscriberprofessionalinfocontroller.js";
-import subscriptionmastercontroller from "../src/controllers/subscriptionmastercontroller.js"
+import subscriptionmastercontroller from "../src/controllers/subscriptionmastercontroller.js";
 import usersamplecontroller from "../src/controllers/usersamplecontroller.js";
-import reviewcontroller from "../src/controllers/reviewcontroller.js"
-import photocontroller from "../src/controllers/photocontroller.js"
-import videocontroller from "../src/controllers/videocontroller.js"
-import userscontroller from "../src/controllers/userscontroller.js"
-import rolecontroller from "../src/controllers/rolecontroller.js";
-import subscriberdetailscontroller from "../src/controllers/subscriberdetailscontroller.js";
-import citycontroller from "../src/controllers/citycontroller.js";
-import audiocontroller from "../src/controllers/audiocontroller.js";
-import personcontroller from "../src/controllers/personcontroller.js";
-import logincontroller from "../src/controllers/logincontroller.js";
-import swaggerUi from "swagger-ui-express";
-import swaggerjsdoc from "swagger-jsdoc";
-import paymentcontroller from "../src/controllers/paymentcontroller.js";
+import userscontroller from "../src/controllers/userscontroller.js";
+import videocontroller from "../src/controllers/videocontroller.js";
+import audio from "../src/middleware/audio.js";
 import verifyToken from "../src/middleware/auth.js";
-import nodemailer from "nodemailer";
-import hbs from "nodemailer-express-handlebars";
-import path from "path";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import rolebaseauth from "../src/middleware/roleauth.js";
 import upload from "../src/middleware/upload.js";
 import videoUpload from "../src/middleware/videoupload.js";
-import audio from "../src/middleware/audio.js";
+import db from "../src/models/main.js";
 
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
+
 
 const app = express();
 
@@ -53,9 +54,6 @@ const __filename = fileURLToPath(import.meta.url);
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 
 
-app.get('/', (req, res) => {
-    res.sendFile('index.html', { root: `${__dirname}/public/dist/sirius` });
-});
 
 // // this.middlewares();
 // app.get('/', (req, res) => {
@@ -71,7 +69,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(express.static(`${__dirname}/public/dist/omega`));
 
 app.get('*', (req, res) => {
-    res.sendFile(path.resolve(path.dirname('./src/public/dist/sirius')));
+	res.sendFile(path.resolve(path.dirname('./src/public/dist/sirius')));
 })
 
 // const express = require('express'); nor needed
@@ -86,10 +84,10 @@ app.use(cors());
 dotenv.config();
 
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Accept,X-Requested-With");
-    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS, HEAD")
-    next();
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Content-Type, Accept,X-Requested-With");
+	res.header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS, HEAD")
+	next();
 });
 app.use(bodyParser.json());
 
@@ -125,566 +123,566 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 function initial() {
 
-    Login001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Login001mb.insertMany([{
-                'logintype': "mobile no ",
-                'password': "xyz",
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 22,
-                'updateddatetime': 11 / 12 / 22,
-                'updateduser': "raj",
+	Login001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Login001mb.insertMany([{
+				'logintype': "mobile no ",
+				'password': "xyz",
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 22,
+				'updateddatetime': 11 / 12 / 22,
+				'updateduser': "raj",
 
-            },])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Country001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Country001mb.insertMany([{
-                'countryid': 123,
-                'countryname': "palls",
-                'countrydesc': "good",
-                'status': "good",
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 22,
-                'updateddatetime': 11 / 12 / 22,
-                'updateduser': "raj",
+			},])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Country001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Country001mb.insertMany([{
+				'countryid': 123,
+				'countryname': "palls",
+				'countrydesc': "good",
+				'status': "good",
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 22,
+				'updateddatetime': 11 / 12 / 22,
+				'updateduser': "raj",
 
-            },])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    City001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            City001mb.insertMany([{
-                'cityid': 123,
-                'cityname': "xyz",
-                'citydesc': "good",
-                'status': "good",
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 22,
-                'updateddatetime': 11 / 12 / 22,
-                'updateduser': "raj",
+			},])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	City001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			City001mb.insertMany([{
+				'cityid': 123,
+				'cityname': "xyz",
+				'citydesc': "good",
+				'status': "good",
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 22,
+				'updateddatetime': 11 / 12 / 22,
+				'updateduser': "raj",
 
-            },])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Categorydetails001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Categorydetails001mb.insertMany([{
-                'catcode': "T867",
-                'catname': "C22",
-                'status': "GOOD",
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 2021,
-                'updateduser': "raj",
-                'updateddatetime': 11 / 12 / 2021
-            }
+			},])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Categorydetails001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Categorydetails001mb.insertMany([{
+				'catcode': "T867",
+				'catname': "C22",
+				'status': "GOOD",
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 2021,
+				'updateduser': "raj",
+				'updateddatetime': 11 / 12 / 2021
+			}
 
-            ])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Companydetails001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Companydetails001mb.insertMany([{
-                'companycode': "S33",
-                'companyname': "XYZ",
-                'address': "street",
-                'phonenumber': 78778876,
-                'regionalid': 98,
-                'status': "good",
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 2021,
-                'updateduser': "raj",
-                'updateddatetime': 11 / 12 / 2021
-            }
+			])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Companydetails001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Companydetails001mb.insertMany([{
+				'companycode': "S33",
+				'companyname': "XYZ",
+				'address': "street",
+				'phonenumber': 78778876,
+				'regionalid': 98,
+				'status': "good",
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 2021,
+				'updateduser': "raj",
+				'updateddatetime': 11 / 12 / 2021
+			}
 
-            ])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Contentmaster001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Contentmaster001mb.insertMany([{
-                'contentid': 6767,
-                'name': "RAJ",
-                'description': "good",
-                'size': "222",
-                'quality': "good",
-                'format': "size",
-                'status': "good",
-                'discountflag': true,
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 2021,
-                'updateduser': "raj",
-                'updateddatetime': 11 / 12 / 2021
-            }
+			])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Contentmaster001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Contentmaster001mb.insertMany([{
+				'contentid': 6767,
+				'name': "RAJ",
+				'description': "good",
+				'size': "222",
+				'quality': "good",
+				'format': "size",
+				'status': "good",
+				'discountflag': true,
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 2021,
+				'updateduser': "raj",
+				'updateddatetime': 11 / 12 / 2021
+			}
 
-            ])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Language001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Language001mb.insertMany([{
-                'languageid': 77,
-                'languagename': "raj",
-                'languagedesc': "ok",
-                'status': "good",
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 2021,
-                'updateduser': "raj",
-                'updateddatetime': 11 / 12 / 2021
-            }
+			])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Language001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Language001mb.insertMany([{
+				'languageid': 77,
+				'languagename': "raj",
+				'languagedesc': "ok",
+				'status': "good",
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 2021,
+				'updateduser': "raj",
+				'updateddatetime': 11 / 12 / 2021
+			}
 
-            ])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Regionaldetails001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Regionaldetails001mb.insertMany([{
-                'regionalid': 544,
-                'regionalname': "RAJ",
-                'regionaldesc': "good",
-                'status': "good",
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 2021,
-                'updateduser': "raj",
-                'updateddatetime': 11 / 12 / 2021
-            }
+			])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Regionaldetails001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Regionaldetails001mb.insertMany([{
+				'regionalid': 544,
+				'regionalname': "RAJ",
+				'regionaldesc': "good",
+				'status': "good",
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 2021,
+				'updateduser': "raj",
+				'updateddatetime': 11 / 12 / 2021
+			}
 
-            ])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Religion001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Religion001mb.insertMany([{
-                'regionalid': 666,
-                'regionalname': "RAJ",
-                'regionaldesc': "good",
-                'status': "good",
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 2021,
-                'updateduser': "raj",
-                'updateddatetime': 11 / 12 / 2021
-            }
+			])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Religion001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Religion001mb.insertMany([{
+				'regionalid': 666,
+				'regionalname': "RAJ",
+				'regionaldesc': "good",
+				'status': "good",
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 2021,
+				'updateduser': "raj",
+				'updateddatetime': 11 / 12 / 2021
+			}
 
-            ])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Subscriberdetails001wb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Subscriberdetails001wb.insertMany([{
-                'regionalid': 434,
-                'companycode': 3443,
-                'catcode': 4343,
-                'subcatcode': 4343,
-                'categoryid': 4343,
-                'subscid': 434,
-                'subscname': "RAJ",
-                '  classificationid': 898,
-                'sex': "male",
-                'subscdesc': "good",
-                'aboutme': "good",
-                'address': "street",
-                'phoneno': 77787,
-                'subscapproval': true,
-                'approvedby': "raj",
-                'approvedon': 11 / 12 / 2021,
-                'subscsubspid': 786,
-                'subscstatus': "good",
-                'inserteduser': "raj",
-                'inserteddatetime': 11 / 12 / 2021,
-                'updateduser': "raj",
-                'updateddatetime': 11 / 12 / 2021
-            }
+			])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Subscriberdetails001wb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Subscriberdetails001wb.insertMany([{
+				'regionalid': 434,
+				'companycode': 3443,
+				'catcode': 4343,
+				'subcatcode': 4343,
+				'categoryid': 4343,
+				'subscid': 434,
+				'subscname': "RAJ",
+				'  classificationid': 898,
+				'sex': "male",
+				'subscdesc': "good",
+				'aboutme': "good",
+				'address': "street",
+				'phoneno': 77787,
+				'subscapproval': true,
+				'approvedby': "raj",
+				'approvedon': 11 / 12 / 2021,
+				'subscsubspid': 786,
+				'subscstatus': "good",
+				'inserteduser': "raj",
+				'inserteddatetime': 11 / 12 / 2021,
+				'updateduser': "raj",
+				'updateddatetime': 11 / 12 / 2021
+			}
 
-            ])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    State001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            State001mb.insertMany([{
-                'stateid': 123,
-                'statename': "sri",
-                'statedesc': "good",
-                'status': "active",
-                'inserteduser': "aravindh",
-                'inserteddatetime': 11 / 12 / 22,
-                'updateduser': "sam",
-                'updateddatetime': 9 / 12 / 22,
-            }
+			])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	State001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			State001mb.insertMany([{
+				'stateid': 123,
+				'statename': "sri",
+				'statedesc': "good",
+				'status': "active",
+				'inserteduser': "aravindh",
+				'inserteddatetime': 11 / 12 / 22,
+				'updateduser': "sam",
+				'updateddatetime': 9 / 12 / 22,
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Subcatclassification001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Subcatclassification001mb.insertMany([{
-                'catcode': "ab12",
-                'subcatcode': "ab13",
-                'classificationid': 1234,
-                'classificationname': "dass",
-                'status': "good",
-                'inserteduser': "aravindh",
-                'inserteddatetime': 11 / 12 / 22,
-                'updateduser': "chandru",
-                'updateddatetime': 6 / 12 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Subcatclassification001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Subcatclassification001mb.insertMany([{
+				'catcode': "ab12",
+				'subcatcode': "ab13",
+				'classificationid': 1234,
+				'classificationname': "dass",
+				'status': "good",
+				'inserteduser': "aravindh",
+				'inserteddatetime': 11 / 12 / 22,
+				'updateduser': "chandru",
+				'updateddatetime': 6 / 12 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Subcategory001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Subcategory001mb.insertMany([{
-                'catcode': "a2b",
-                'subcatcode': "s21",
-                'subcatname': "sri",
-                'subcatstatus': "active",
-                'status': "good",
-                'inserteduser': "aravind",
-                'inserteddatetime': 11 / 12 / 22,
-                'updateduser': "chandru",
-                'updateddatetime': 9 / 12 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Subcategory001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Subcategory001mb.insertMany([{
+				'catcode': "a2b",
+				'subcatcode': "s21",
+				'subcatname': "sri",
+				'subcatstatus': "active",
+				'status': "good",
+				'inserteduser': "aravind",
+				'inserteddatetime': 11 / 12 / 22,
+				'updateduser': "chandru",
+				'updateddatetime': 9 / 12 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Usersample001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Usersample001mb.insertMany([{
-                'username': "Raj",
-                'password': "****",
-                'securityquestion': "xys",
-                'securityanswer': "xys"
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Usersample001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Usersample001mb.insertMany([{
+				'username': "Raj",
+				'password': "****",
+				'securityquestion': "xys",
+				'securityanswer': "xys"
 
-            }
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Review001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Review001mb.insertMany([{
-                'comments': "good",
-                'rating': "9",
-                'status': "good"
-            }])
-                .then(() => {
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Review001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Review001mb.insertMany([{
+				'comments': "good",
+				'rating': "9",
+				'status': "good"
+			}])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Subscribercontent001wb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Subscribercontent001wb.insertMany([{
-                'subscid': 123,
-                'subsccontentid1': 12,
-                'subsccontentidattach1': 123,
-                'subsccontentidappovalflag1': true,
-                'subsccontentidattach2': 34,
-                'subsccontentidappovalflag2': false,
-                'subsccontentidattachn': 12,
-                'subsccontentidappovalflagn': false,
-                'inserteduser': "wedas",
-                'inserteddatetime': 11 / 12 / 22,
-                'updateduser': "fsdf",
-                'updateddatetime': 8 / 12 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Subscribercontent001wb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Subscribercontent001wb.insertMany([{
+				'subscid': 123,
+				'subsccontentid1': 12,
+				'subsccontentidattach1': 123,
+				'subsccontentidappovalflag1': true,
+				'subsccontentidattach2': 34,
+				'subsccontentidappovalflag2': false,
+				'subsccontentidattachn': 12,
+				'subsccontentidappovalflagn': false,
+				'inserteduser': "wedas",
+				'inserteddatetime': 11 / 12 / 22,
+				'updateduser': "fsdf",
+				'updateddatetime': 8 / 12 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Subscribercontentauth001wb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Subscribercontentauth001wb.insertMany([{
-                'subscid': 123,
-                'subscsubpid': 12,
-                'subscsubpstatus': "good",
-                'subscsubpstartdate': 1 / 12 / 22,
-                'subscsupbenddate': 2 / 12 / 22,
-                'inserteduser': "aravindh",
-                'inserteddatetime': 3 / 12 / 22,
-                'updateduser': "chandru",
-                'updateddatetime': 4 / 12 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Subscribercontentauth001wb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Subscribercontentauth001wb.insertMany([{
+				'subscid': 123,
+				'subscsubpid': 12,
+				'subscsubpstatus': "good",
+				'subscsubpstartdate': 1 / 12 / 22,
+				'subscsupbenddate': 2 / 12 / 22,
+				'inserteduser': "aravindh",
+				'inserteddatetime': 3 / 12 / 22,
+				'updateduser': "chandru",
+				'updateddatetime': 4 / 12 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Subscriberpersonalinfo001wb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Subscriberpersonalinfo001wb.insertMany([{
-                'subcid': 12,
-                'personaldetails': "my details?",
-                'hobbies': "playing",
-                'flex1': "flex1",
-                'flex2': "flex2",
-                'flex3': "flex3",
-                'flex4': "flex4",
-                'flex5': "flex5",
-                'flex6': "flex6",
-                'flex7': "flex7",
-                'flex8': "flex8",
-                'flex9': "flex9",
-                'flex10': "flex10",
-                'flex11': "flex11",
-                'flex12': "flex12",
-                'inserteduser': "aravindh",
-                'inserteddatetime': 3 / 11 / 22,
-                'updateduser': "chandru",
-                'updateddatetime': 4 / 12 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Subscriberpersonalinfo001wb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Subscriberpersonalinfo001wb.insertMany([{
+				'subcid': 12,
+				'personaldetails': "my details?",
+				'hobbies': "playing",
+				'flex1': "flex1",
+				'flex2': "flex2",
+				'flex3': "flex3",
+				'flex4': "flex4",
+				'flex5': "flex5",
+				'flex6': "flex6",
+				'flex7': "flex7",
+				'flex8': "flex8",
+				'flex9': "flex9",
+				'flex10': "flex10",
+				'flex11': "flex11",
+				'flex12': "flex12",
+				'inserteduser': "aravindh",
+				'inserteddatetime': 3 / 11 / 22,
+				'updateduser': "chandru",
+				'updateddatetime': 4 / 12 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Subscriberprofessionalinfo002wb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Subscriberprofessionalinfo002wb.insertMany([{
-                'subcid': 12,
-                'professionaldetails': "hi",
-                'job': "engineer",
-                'flex1': "flex1",
-                'flex2': "flex2",
-                'flex3': "flex3",
-                'flex4': "flex4",
-                'flex5': "flex5",
-                'flex6': "flex6",
-                'flex7': "flex7",
-                'flex8': "flex8",
-                'flex9': "flex9",
-                'flex10': "flex10",
-                'flex11': "flex11",
-                'flex12': "flex12",
-                'inserteduser': "raj",
-                'inserteddatetime': 3 / 11 / 22,
-                'updateduser': "sri",
-                'updateddatetime': 4 / 12 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Subscriberprofessionalinfo002wb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Subscriberprofessionalinfo002wb.insertMany([{
+				'subcid': 12,
+				'professionaldetails': "hi",
+				'job': "engineer",
+				'flex1': "flex1",
+				'flex2': "flex2",
+				'flex3': "flex3",
+				'flex4': "flex4",
+				'flex5': "flex5",
+				'flex6': "flex6",
+				'flex7': "flex7",
+				'flex8': "flex8",
+				'flex9': "flex9",
+				'flex10': "flex10",
+				'flex11': "flex11",
+				'flex12': "flex12",
+				'inserteduser': "raj",
+				'inserteddatetime': 3 / 11 / 22,
+				'updateduser': "sri",
+				'updateddatetime': 4 / 12 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Video001wb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Video001wb.insertMany([{
-                'category': "s222",
-                'filename': "img.png",
-                'originalfilename': "video",
-                'status': "active",
-                'content': "678667",
-                'inserteduser': "raj",
-                'inserteddatetime': 6 / 11 / 22,
-                'updateduser': "raju",
-                'updateddatetime': 7 / 11 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Video001wb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Video001wb.insertMany([{
+				'category': "s222",
+				'filename': "img.png",
+				'originalfilename': "video",
+				'status': "active",
+				'content': "678667",
+				'inserteduser': "raj",
+				'inserteddatetime': 6 / 11 / 22,
+				'updateduser': "raju",
+				'updateddatetime': 7 / 11 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Photo001wb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Photo001wb.insertMany([{
-                'category': "s222",
-                'filename': "img.png",
-                'originalname': "photo",
-                'content': "678667",
-                'status': "active",
-                'inserteduser': "raj",
-                'inserteddatetime': 6 / 11 / 22,
-                'updateduser': "raju",
-                'updateddatetime': 7 / 11 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Photo001wb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Photo001wb.insertMany([{
+				'category': "s222",
+				'filename': "img.png",
+				'originalname': "photo",
+				'content': "678667",
+				'status': "active",
+				'inserteduser': "raj",
+				'inserteddatetime': 6 / 11 / 22,
+				'updateduser': "raju",
+				'updateddatetime': 7 / 11 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Person001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Person001mb.insertMany([{
-                'status': "active",
-                'inserteduser': "raj",
-                'inserteddatetime': 5 / 11 / 22,
-                'updateduser': "raju",
-                'updateddatetime': 12 / 11 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Person001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Person001mb.insertMany([{
+				'status': "active",
+				'inserteduser': "raj",
+				'inserteddatetime': 5 / 11 / 22,
+				'updateduser': "raju",
+				'updateddatetime': 12 / 11 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Payment001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Payment001mb.insertMany([{
-                'subpid': 7878,
-                'payid': 88,
-                'payment': "card",
-                'status': "active",
-                'inserteduser': "raj",
-                'inserteddatetime': 5 / 11 / 22,
-                'updateduser': "raju",
-                'updateddatetime': 12 / 11 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Payment001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Payment001mb.insertMany([{
+				'subpid': 7878,
+				'payid': 88,
+				'payment': "card",
+				'status': "active",
+				'inserteduser': "raj",
+				'inserteddatetime': 5 / 11 / 22,
+				'updateduser': "raju",
+				'updateddatetime': 12 / 11 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Users001wb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Users001wb.insertMany([{
-                'firstname': "RAJ",
-                'lasttname': "d",
-                'zipcode': 1223243,
-                'employeeid': 8778,
-                'dob': 3 / 11 / 2000,
-                'email': "xyz@gmail.com",
-                'confirmemail': "xyz@gmail.com",
-                'sex': "male",
-                'address1': "xyz",
-                'address2': "xyz",
-                'address3': "xyz",
-                'city': "chennai",
-                'state': "tn",
-                'country': "india",
-                'mobile': 76886797974,
-                'landline': 423321211,
-                'status': "active",
-                'inserteduser': "raj",
-                'inserteddatetime': 5 / 11 / 22,
-                'updateduser': "raju",
-                'updateddatetime': 12 / 11 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Users001wb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Users001wb.insertMany([{
+				'firstname': "RAJ",
+				'lasttname': "d",
+				'zipcode': 1223243,
+				'employeeid': 8778,
+				'dob': 3 / 11 / 2000,
+				'email': "xyz@gmail.com",
+				'confirmemail': "xyz@gmail.com",
+				'sex': "male",
+				'address1': "xyz",
+				'address2': "xyz",
+				'address3': "xyz",
+				'city': "chennai",
+				'state': "tn",
+				'country': "india",
+				'mobile': 76886797974,
+				'landline': 423321211,
+				'status': "active",
+				'inserteduser': "raj",
+				'inserteddatetime': 5 / 11 / 22,
+				'updateduser': "raju",
+				'updateddatetime': 12 / 11 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Subscriptionmaster001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Subscriptionmaster001mb.insertMany([{
-                'subpid': 1212,
-                'subpname': "sri",
-                'description': "good",
-                'tenure': "3 years",
-                'amount': 23,
-                'status': "active",
-                'discountflag': true,
-                'inserteduser': "aravindh",
-                'inserteddatetime': 3 / 11 / 22,
-                'updateduser': "selvam",
-                'updateddatetime': 3 / 11 / 22
-            }
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Subscriptionmaster001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Subscriptionmaster001mb.insertMany([{
+				'subpid': 1212,
+				'subpname': "sri",
+				'description': "good",
+				'tenure': "3 years",
+				'amount': 23,
+				'status': "active",
+				'discountflag': true,
+				'inserteduser': "aravindh",
+				'inserteddatetime': 3 / 11 / 22,
+				'updateduser': "selvam",
+				'updateddatetime': 3 / 11 / 22
+			}
 
-            ])
-                .then(() => {
+			])
+				.then(() => {
 
-                })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Role001mb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Role001mb.insertMany([{
-                'rolename': "farmer",
-                'status': "active",
-                'discountflag': true,
-                'inserteduser': "aravindh",
-                'inserteddatetime': 3 / 11 / 22,
-                'updateduser': "selvam",
-                'updateddatetime': 3 / 11 / 22
-            }])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
-    Audio001wb.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            Audio001wb.insertMany([{
-                'category': "s222",
-                'filename': "img.mp3",
-                'originalfilename': "audio",
-                'content': "678667",
-                'status': "active",
-                'inserteduser': "raj",
-                'inserteddatetime': 6 / 11 / 22,
-                'updateduser': "raju",
-                'updateddatetime': 7 / 11 / 22
-            }])
-                .then(() => { })
-                .catch((err) => console.log("error", err));
-        }
-    });
+				})
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Role001mb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Role001mb.insertMany([{
+				'rolename': "farmer",
+				'status': "active",
+				'discountflag': true,
+				'inserteduser': "aravindh",
+				'inserteddatetime': 3 / 11 / 22,
+				'updateduser': "selvam",
+				'updateddatetime': 3 / 11 / 22
+			}])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
+	Audio001wb.estimatedDocumentCount((err, count) => {
+		if (!err && count === 0) {
+			Audio001wb.insertMany([{
+				'category': "s222",
+				'filename': "img.mp3",
+				'originalfilename': "audio",
+				'content': "678667",
+				'status': "active",
+				'inserteduser': "raj",
+				'inserteddatetime': 6 / 11 / 22,
+				'updateduser': "raju",
+				'updateddatetime': 7 / 11 / 22
+			}])
+				.then(() => { })
+				.catch((err) => console.log("error", err));
+		}
+	});
 }
 
 app.use("/api/logincontroller", logincontroller);
@@ -719,42 +717,42 @@ app.use("/api/verifyToken", verifyToken);
 const PORT = process.env.PORT || 8081;
 
 db.mongoose
-    .connect(process.env.DATABASE_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
-    .then(() => {
+	.connect(process.env.DATABASE_URI, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
+	.then(() => {
 
-        console.log(`Successfully connect to MongoDB .`);
-        if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
+		console.log(`Successfully connect to MongoDB .`);
+		if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 
-            // not need
-            // dotenv.config({ path: `${__dirname}/../env/.env.${process.env.NODE_ENV.trim()}` });
-            // this.app = express();
-            // this.middlewares();
+		// not need
+		// dotenv.config({ path: `${__dirname}/../env/.env.${process.env.NODE_ENV.trim()}` });
+		// this.app = express();
+		// this.middlewares();
 
-            // not need
+		// not need
 
-            // not need
-            // not need
+		// not need
+		// not need
 
-        app.get('/', (req, res) => {
-            res.sendFile('index.html', { root: path.resolve(path.dirname('./src/public/dist/sirius')) });
-        });
+		app.get('/', (req, res) => {
+			res.sendFile('index.html', { root: path.resolve(path.dirname('./src/public/dist/sirius')) });
+		});
 
-        app.get('*', (req, res) => {
-            res.sendFile(path.resolve(path.dirname('./src/public/dist/sirius')));
-        })
+		app.get('*', (req, res) => {
+			res.sendFile(path.resolve(path.dirname('./src/public/dist/sirius')));
+		})
 
-        initial();
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}.`);
-        });
-    })
-    .catch((err) => {
-        console.error("Connection error", err);
-        process.exit();
-    });
+		initial();
+		app.listen(PORT, () => {
+			console.log(`Server is running on port ${PORT}.`);
+		});
+	})
+	.catch((err) => {
+		console.error("Connection error", err);
+		process.exit();
+	});
 
 
 //     console.log(`Successfully connect to MongoDB .`);
@@ -772,30 +770,30 @@ db.mongoose
 
 
 const options = {
-    swaggerDefinition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'Sirius Matrimony API Generation',
-            version: '1.0.0'
-        },
-        servers: [
-            {
-                url: "http://localhost:8081",
-            },
-        ],
-        tags: [{
-            name: " API Generation",
-        }],
-        components: {
-            securitySchemes: {
-                bearerAuth: {
-                    type: "http",
-                    scheme: "bearer"
-                },
-            },
-        },
-    },
-    apis: ['index.js'],
+	swaggerDefinition: {
+		openapi: '3.0.0',
+		info: {
+			title: 'Sirius Matrimony API Generation',
+			version: '1.0.0'
+		},
+		servers: [
+			{
+				url: "http://localhost:8081",
+			},
+		],
+		tags: [{
+			name: " API Generation",
+		}],
+		components: {
+			securitySchemes: {
+				bearerAuth: {
+					type: "http",
+					scheme: "bearer"
+				},
+			},
+		},
+	},
+	apis: ['index.js'],
 };
 const specs = swaggerjsdoc(options);
 app.use('/index', swaggerUi.serve, swaggerUi.setup(specs));
@@ -829,16 +827,16 @@ app.use('/index', swaggerUi.serve, swaggerUi.setup(specs));
  *                           $ref: '#/components/schemas/role001mb'
  */
 app.get('/api/role001mb', (req, res) => {
-    Role001mb.find(function (err, role001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting role001mb.',
-                error: err
-            });
-        }
+	Role001mb.find(function (err, role001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting role001mb.',
+				error: err
+			});
+		}
 
-        return res.json(role001mb);
-    });
+		return res.json(role001mb);
+	});
 });
 
 /**
@@ -874,24 +872,24 @@ app.get('/api/role001mb', (req, res) => {
  */
 
 app.get('/api/role001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Role001mb.findOne({ _id: id }, function (err, role001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting role001mb.',
-                error: err
-            });
-        }
+	Role001mb.findOne({ _id: id }, function (err, role001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting role001mb.',
+				error: err
+			});
+		}
 
-        if (!role001mb) {
-            return res.status(404).json({
-                message: 'No such role001mb'
-            });
-        }
+		if (!role001mb) {
+			return res.status(404).json({
+				message: 'No such role001mb'
+			});
+		}
 
-        return res.json(role001mb);
-    });
+		return res.json(role001mb);
+	});
 });
 
 /**
@@ -918,18 +916,18 @@ app.get('/api/role001mb/:id', (req, res) => {
 
 app.post('/api/role001mb/role', (req, res) => {
 
-    const role001mb = new Role001mb();
-    role001mb.rolename = req.body.rolename;
-    role001mb.save(function (err, role001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when creating role001mb',
-                error: err
-            });
-        }
+	const role001mb = new Role001mb();
+	role001mb.rolename = req.body.rolename;
+	role001mb.save(function (err, role001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when creating role001mb',
+				error: err
+			});
+		}
 
-        return res.status(201).json('role001mb Created!');
-    });
+		return res.status(201).json('role001mb Created!');
+	});
 
 })
 
@@ -968,33 +966,33 @@ app.post('/api/role001mb/role', (req, res) => {
  */
 
 app.put('/api/role001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Role001mb.findOne({ _id: id }, function (err, role001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting role001mb',
-                error: err
-            });
-        }
+	Role001mb.findOne({ _id: id }, function (err, role001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting role001mb',
+				error: err
+			});
+		}
 
-        if (!role001mb) {
-            return res.status(404).json({
-                message: 'No such role001mb'
-            });
-        }
-        role001mb.rolename = req.body.rolename ? req.body.rolename : role001mb.rolename;
-        role001mb.save(function (err, role001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating role001mb.',
-                    error: err
-                });
-            }
+		if (!role001mb) {
+			return res.status(404).json({
+				message: 'No such role001mb'
+			});
+		}
+		role001mb.rolename = req.body.rolename ? req.body.rolename : role001mb.rolename;
+		role001mb.save(function (err, role001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating role001mb.',
+					error: err
+				});
+			}
 
-            return res.json(role001mb);
-        });
-    });
+			return res.json(role001mb);
+		});
+	});
 });
 
 
@@ -1022,18 +1020,18 @@ app.put('/api/role001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/role001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Role001mb.findByIdAndRemove(id, function (err, role001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the role001mb.',
-                error: err
-            });
-        }
+	Role001mb.findByIdAndRemove(id, function (err, role001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the role001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -1084,16 +1082,16 @@ app.delete('/api/role001mb/:id', (req, res) => {
  */
 
 app.get('/api/country001mb', (req, res) => {
-    Country001mb.find(function (err, country001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting country001mb.',
-                error: err
-            });
-        }
+	Country001mb.find(function (err, country001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting country001mb.',
+				error: err
+			});
+		}
 
-        return res.json(country001mb);
-    });
+		return res.json(country001mb);
+	});
 });
 
 /**
@@ -1124,24 +1122,24 @@ app.get('/api/country001mb', (req, res) => {
  */
 
 app.get('/api/country001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Country001mb.findOne({ _id: id }, function (err, country001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting country001mb.',
-                error: err
-            });
-        }
+	Country001mb.findOne({ _id: id }, function (err, country001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting country001mb.',
+				error: err
+			});
+		}
 
-        if (!country001mb) {
-            return res.status(404).json({
-                message: 'No such country001mb'
-            });
-        }
+		if (!country001mb) {
+			return res.status(404).json({
+				message: 'No such country001mb'
+			});
+		}
 
-        return res.json(country001mb);
-    });
+		return res.json(country001mb);
+	});
 });
 
 /**
@@ -1167,21 +1165,21 @@ app.get('/api/country001mb/:id', (req, res) => {
  */
 
 app.post('/api/country001mb/country', (req, res) => {
-    const country001mb = new Country001mb();
-    country001mb.countryname = req.body.countryname;
-    country001mb.countrydesc = req.body.countrydesc;
-    country001mb.status = req.body.status;
-    country001mb.inserteduser = req.body.inserteduser;
-    country001mb.inserteddatetime = req.body.inserteddatetime;
-    country001mb.updateddatetime = req.body.updateddatetime;
-    country001mb.updateduser = req.body.updateduser;
-    country001mb.save()
-        .then((result) => {
-            return res.json({ message: 'country created' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	const country001mb = new Country001mb();
+	country001mb.countryname = req.body.countryname;
+	country001mb.countrydesc = req.body.countrydesc;
+	country001mb.status = req.body.status;
+	country001mb.inserteduser = req.body.inserteduser;
+	country001mb.inserteddatetime = req.body.inserteddatetime;
+	country001mb.updateddatetime = req.body.updateddatetime;
+	country001mb.updateduser = req.body.updateduser;
+	country001mb.save()
+		.then((result) => {
+			return res.json({ message: 'country created' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 
 
@@ -1219,40 +1217,40 @@ app.post('/api/country001mb/country', (req, res) => {
  */
 
 app.put('/api/country001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Country001mb.findOne({ _id: id }, function (err, country001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting country001mb',
-                error: err
-            });
-        }
+	Country001mb.findOne({ _id: id }, function (err, country001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting country001mb',
+				error: err
+			});
+		}
 
-        if (!country001mb) {
-            return res.status(404).json({
-                message: 'No such country001mb'
-            });
-        }
-        country001mb.countryname = req.body.countryname ? req.body.countryname : country001mb.countryname;
-        country001mb.countrydesc = req.body.countrydesc ? req.body.countrydesc : country001mb.countrydesc;
-        country001mb.status = req.body.status ? req.body.status : country001mb.status;
-        country001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : country001mb.inserteduser;
-        country001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : country001mb.inserteddatetime;
-        country001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : country001mb.updateddatetime;
-        country001mb.updateduser = req.body.updateduser ? req.body.updateduser : country001mb.updateduser;
+		if (!country001mb) {
+			return res.status(404).json({
+				message: 'No such country001mb'
+			});
+		}
+		country001mb.countryname = req.body.countryname ? req.body.countryname : country001mb.countryname;
+		country001mb.countrydesc = req.body.countrydesc ? req.body.countrydesc : country001mb.countrydesc;
+		country001mb.status = req.body.status ? req.body.status : country001mb.status;
+		country001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : country001mb.inserteduser;
+		country001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : country001mb.inserteddatetime;
+		country001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : country001mb.updateddatetime;
+		country001mb.updateduser = req.body.updateduser ? req.body.updateduser : country001mb.updateduser;
 
-        country001mb.save(function (err, country001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating country001mb.',
-                    error: err
-                });
-            }
+		country001mb.save(function (err, country001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating country001mb.',
+					error: err
+				});
+			}
 
-            return res.json(country001mb);
-        });
-    });
+			return res.json(country001mb);
+		});
+	});
 });
 
 
@@ -1280,18 +1278,18 @@ app.put('/api/country001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/country001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Country001mb.findByIdAndRemove(id, function (err, country001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the country001mb.',
-                error: err
-            });
-        }
+	Country001mb.findByIdAndRemove(id, function (err, country001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the country001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -1347,16 +1345,16 @@ app.delete('/api/country001mb/:id', (req, res) => {
  */
 
 app.get('/api/state001mb', (req, res) => {
-    State001mb.find(function (err, state001mbs) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting state001mb.',
-                error: err
-            });
-        }
+	State001mb.find(function (err, state001mbs) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting state001mb.',
+				error: err
+			});
+		}
 
-        return res.json(state001mbs);
-    });
+		return res.json(state001mbs);
+	});
 });
 
 /**
@@ -1387,24 +1385,24 @@ app.get('/api/state001mb', (req, res) => {
  */
 
 app.get('/api/state001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    State001mb.findOne({ _id: id }, function (err, state001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting state001mb.',
-                error: err
-            });
-        }
+	State001mb.findOne({ _id: id }, function (err, state001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting state001mb.',
+				error: err
+			});
+		}
 
-        if (!state001mb) {
-            return res.status(404).json({
-                message: 'No such state001mb'
-            });
-        }
+		if (!state001mb) {
+			return res.status(404).json({
+				message: 'No such state001mb'
+			});
+		}
 
-        return res.json(state001mb);
-    });
+		return res.json(state001mb);
+	});
 });
 
 /**
@@ -1430,27 +1428,27 @@ app.get('/api/state001mb/:id', (req, res) => {
  */
 
 app.post('/api/state001mb/state', (req, res) => {
-    const state001mb = new State001mb();
-    state001mb.countryid = req.body.countryid.id;
-    state001mb.statename = req.body.statename;
-    state001mb.statedesc = req.body.statedesc;
-    state001mb.status = req.body.status;
-    state001mb.inserteduser = req.body.inserteduser;
-    state001mb.inserteddatetime = req.body.inserteddatetime;
-    state001mb.updateduser = req.body.updateduser;
-    state001mb.updateddatetime = req.body.updateddatetime;
-    Country001mb.findOne({ _id: state001mb.countryid }, (err, user) => {
-        if (user) {
-            user.stateid.push(state001mb);
-            user.save();
-            state001mb.save()
-            return res.json({ message: 'state created!' });
-        } else {
-            return res.status(500).json({
-                message: 'Error when creating state001mb'
-            });
-        }
-    });
+	const state001mb = new State001mb();
+	state001mb.countryid = req.body.countryid.id;
+	state001mb.statename = req.body.statename;
+	state001mb.statedesc = req.body.statedesc;
+	state001mb.status = req.body.status;
+	state001mb.inserteduser = req.body.inserteduser;
+	state001mb.inserteddatetime = req.body.inserteddatetime;
+	state001mb.updateduser = req.body.updateduser;
+	state001mb.updateddatetime = req.body.updateddatetime;
+	Country001mb.findOne({ _id: state001mb.countryid }, (err, user) => {
+		if (user) {
+			user.stateid.push(state001mb);
+			user.save();
+			state001mb.save()
+			return res.json({ message: 'state created!' });
+		} else {
+			return res.status(500).json({
+				message: 'Error when creating state001mb'
+			});
+		}
+	});
 })
 
 
@@ -1488,41 +1486,41 @@ app.post('/api/state001mb/state', (req, res) => {
  */
 
 app.put('/api/state001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    State001mb.findOne({ _id: id }, function (err, state001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting state001mb',
-                error: err
-            });
-        }
+	State001mb.findOne({ _id: id }, function (err, state001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting state001mb',
+				error: err
+			});
+		}
 
-        if (!state001mb) {
-            return res.status(404).json({
-                message: 'No such state001mb'
-            });
-        }
-        state001mb.countryid = req.body.countryid.id ? req.body.countryid.id : state001mb.countryid;
-        state001mb.stateid = req.body.stateid ? req.body.stateid : state001mb.stateid;
-        state001mb.statename = req.body.statename ? req.body.statename : state001mb.statename;
-        state001mb.statedesc = req.body.statedesc ? req.body.statedesc : state001mb.statedesc;
-        state001mb.status = req.body.status ? req.body.status : state001mb.status;
-        state001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : state001mb.inserteduser;
-        state001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : state001mb.inserteddatetime;
-        state001mb.updateduser = req.body.updateduser ? req.body.updateduser : state001mb.updateduser;
-        state001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : state001mb.updateddatetime;
-        state001mb.save(function (err, state001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating state001mb.',
-                    error: err
-                });
-            }
+		if (!state001mb) {
+			return res.status(404).json({
+				message: 'No such state001mb'
+			});
+		}
+		state001mb.countryid = req.body.countryid.id ? req.body.countryid.id : state001mb.countryid;
+		state001mb.stateid = req.body.stateid ? req.body.stateid : state001mb.stateid;
+		state001mb.statename = req.body.statename ? req.body.statename : state001mb.statename;
+		state001mb.statedesc = req.body.statedesc ? req.body.statedesc : state001mb.statedesc;
+		state001mb.status = req.body.status ? req.body.status : state001mb.status;
+		state001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : state001mb.inserteduser;
+		state001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : state001mb.inserteddatetime;
+		state001mb.updateduser = req.body.updateduser ? req.body.updateduser : state001mb.updateduser;
+		state001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : state001mb.updateddatetime;
+		state001mb.save(function (err, state001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating state001mb.',
+					error: err
+				});
+			}
 
-            return res.json(state001mb);
-        });
-    });
+			return res.json(state001mb);
+		});
+	});
 });
 
 
@@ -1550,18 +1548,18 @@ app.put('/api/state001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/state001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    State001mb.findByIdAndRemove(id, function (err, state001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the state001mb.',
-                error: err
-            });
-        }
+	State001mb.findByIdAndRemove(id, function (err, state001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the state001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 // ********************** city schema method****************//
@@ -1616,16 +1614,16 @@ app.delete('/api/state001mb/:id', (req, res) => {
  */
 
 app.get('/api/city001mb', (req, res) => {
-    City001mb.find(function (err, city001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting city001mb.',
-                error: err
-            });
-        }
+	City001mb.find(function (err, city001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting city001mb.',
+				error: err
+			});
+		}
 
-        return res.json(city001mb);
-    });
+		return res.json(city001mb);
+	});
 });
 
 /**
@@ -1656,24 +1654,24 @@ app.get('/api/city001mb', (req, res) => {
  */
 
 app.get('/api/city001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    City001mb.findOne({ _id: id }, function (err, city001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting city001mb.',
-                error: err
-            });
-        }
+	City001mb.findOne({ _id: id }, function (err, city001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting city001mb.',
+				error: err
+			});
+		}
 
-        if (!city001mb) {
-            return res.status(404).json({
-                message: 'No such city001mb'
-            });
-        }
+		if (!city001mb) {
+			return res.status(404).json({
+				message: 'No such city001mb'
+			});
+		}
 
-        return res.json(city001mb);
-    });
+		return res.json(city001mb);
+	});
 });
 
 /**
@@ -1699,28 +1697,28 @@ app.get('/api/city001mb/:id', (req, res) => {
  */
 
 app.post('/api/city001mb/city', (req, res) => {
-    const city001mb = new City001mb();
+	const city001mb = new City001mb();
 
-    city001mb.stateid = req.body.stateid.id;
-    city001mb.cityname = req.body.cityname;
-    city001mb.citydesc = req.body.citydesc;
-    city001mb.status = req.body.status;
-    city001mb.inserteduser = req.body.inserteduser;
-    city001mb.inserteddatetime = req.body.inserteddatetime;
-    city001mb.updateddatetime = req.body.updateddatetime;
-    city001mb.updateduser = req.body.updateduser;
-    State001mb.findOne({ _id: city001mb.stateid }, (err, user) => {
-        if (user) {
-            user.cityid.push(city001mb);
-            user.save();
-            city001mb.save()
-            return res.json({ message: 'city created!' });
-        } else {
-            return res.status(500).json({
-                message: 'Error when creating state001mb'
-            });
-        }
-    });
+	city001mb.stateid = req.body.stateid.id;
+	city001mb.cityname = req.body.cityname;
+	city001mb.citydesc = req.body.citydesc;
+	city001mb.status = req.body.status;
+	city001mb.inserteduser = req.body.inserteduser;
+	city001mb.inserteddatetime = req.body.inserteddatetime;
+	city001mb.updateddatetime = req.body.updateddatetime;
+	city001mb.updateduser = req.body.updateduser;
+	State001mb.findOne({ _id: city001mb.stateid }, (err, user) => {
+		if (user) {
+			user.cityid.push(city001mb);
+			user.save();
+			city001mb.save()
+			return res.json({ message: 'city created!' });
+		} else {
+			return res.status(500).json({
+				message: 'Error when creating state001mb'
+			});
+		}
+	});
 })
 
 
@@ -1758,40 +1756,40 @@ app.post('/api/city001mb/city', (req, res) => {
  */
 
 app.put('/api/city001mb/:id', (req, res) => {
-    var id = req.params.id;
-    City001mb.findOne({ _id: id }, function (err, city001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting city001mb',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	City001mb.findOne({ _id: id }, function (err, city001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting city001mb',
+				error: err
+			});
+		}
 
-        if (!city001mb) {
-            return res.status(404).json({
-                message: 'No such city001mb'
-            });
-        }
-        city001mb.stateid = req.body.stateid.id ? req.body.stateid.id : city001mb.stateid;
-        city001mb.cityname = req.body.cityname ? req.body.cityname : city001mb.cityname;
-        city001mb.citydesc = req.body.citydesc ? req.body.citydesc : city001mb.citydesc;
-        city001mb.status = req.body.status ? req.body.status : city001mb.status;
-        city001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : city001mb.inserteduser;
-        city001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : city001mb.inserteddatetime;
-        city001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : city001mb.updateddatetime;
-        city001mb.updateduser = req.body.updateduser ? req.body.updateduser : city001mb.updateduser;
+		if (!city001mb) {
+			return res.status(404).json({
+				message: 'No such city001mb'
+			});
+		}
+		city001mb.stateid = req.body.stateid.id ? req.body.stateid.id : city001mb.stateid;
+		city001mb.cityname = req.body.cityname ? req.body.cityname : city001mb.cityname;
+		city001mb.citydesc = req.body.citydesc ? req.body.citydesc : city001mb.citydesc;
+		city001mb.status = req.body.status ? req.body.status : city001mb.status;
+		city001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : city001mb.inserteduser;
+		city001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : city001mb.inserteddatetime;
+		city001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : city001mb.updateddatetime;
+		city001mb.updateduser = req.body.updateduser ? req.body.updateduser : city001mb.updateduser;
 
-        city001mb.save(function (err, country001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating country001mb.',
-                    error: err
-                });
-            }
+		city001mb.save(function (err, country001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating country001mb.',
+					error: err
+				});
+			}
 
-            return res.json(city001mb);
-        });
-    });
+			return res.json(city001mb);
+		});
+	});
 });
 
 
@@ -1819,18 +1817,18 @@ app.put('/api/city001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/city001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    City001mb.findByIdAndRemove(id, function (err, city001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the city001mb.',
-                error: err
-            });
-        }
+	City001mb.findByIdAndRemove(id, function (err, city001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the city001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -1890,13 +1888,13 @@ app.delete('/api/city001mb/:id', (req, res) => {
  */
 
 app.get('/api/photo001wb', (req, res) => {
-    Photo001wb.find({ id: req.params.id }, function (err, results) {
-        if (err) {
-            res.send(`error: ${err}`);
-        } else {
-            res.send(results);
-        }
-    });
+	Photo001wb.find({ id: req.params.id }, function (err, results) {
+		if (err) {
+			res.send(`error: ${err}`);
+		} else {
+			res.send(results);
+		}
+	});
 });
 
 /**
@@ -1927,23 +1925,23 @@ app.get('/api/photo001wb', (req, res) => {
  */
 
 app.get('/api/photo001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Photo001wb.findOne({ _id: id }, function (err, photo001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting photo001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Photo001wb.findOne({ _id: id }, function (err, photo001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting photo001wb.',
+				error: err
+			});
+		}
 
-        if (!photo001wb) {
-            return res.status(404).json({
-                message: 'No such photo001wb'
-            });
-        }
+		if (!photo001wb) {
+			return res.status(404).json({
+				message: 'No such photo001wb'
+			});
+		}
 
-        return res.json(photo001wb);
-    });
+		return res.json(photo001wb);
+	});
 });
 
 /**
@@ -1973,29 +1971,29 @@ app.get('/api/photo001wb/:id', (req, res) => {
  */
 
 app.post('/api/photo001wb/photo', [upload.single("content")], (req, res) => {
-    const photo001wb = new Photo001wb();
-    photo001wb.content = req.file.path;
-    photo001wb.fieldname = req.file.fieldname;
-    photo001wb.originalname = req.file.originalname;
-    photo001wb.filename = req.file.filename;
-    photo001wb.status = req.body.status;
-    photo001wb.contentid = req.body.contentid;
-    photo001wb.inserteduser = req.body.inserteduser;
-    photo001wb.inserteddatetime = req.body.inserteddatetime;
-    photo001wb.updateduser = req.body.updateduser;
-    photo001wb.updateddatetime = req.body.updateddatetime;
-    Contentmaster001mb.findOne({ _id: photo001wb.contentid }, (err, user) => {
-        if (user) {
-            user.photo.push(photo001wb);
-            user.save();
-            photo001wb.save()
-            return res.json({ message: 'photo created!' });
-        } else {
-            return res.status(500).json({
-                message: 'Error when creating photo001wb'
-            });
-        }
-    });
+	const photo001wb = new Photo001wb();
+	photo001wb.content = req.file.path;
+	photo001wb.fieldname = req.file.fieldname;
+	photo001wb.originalname = req.file.originalname;
+	photo001wb.filename = req.file.filename;
+	photo001wb.status = req.body.status;
+	photo001wb.contentid = req.body.contentid;
+	photo001wb.inserteduser = req.body.inserteduser;
+	photo001wb.inserteddatetime = req.body.inserteddatetime;
+	photo001wb.updateduser = req.body.updateduser;
+	photo001wb.updateddatetime = req.body.updateddatetime;
+	Contentmaster001mb.findOne({ _id: photo001wb.contentid }, (err, user) => {
+		if (user) {
+			user.photo.push(photo001wb);
+			user.save();
+			photo001wb.save()
+			return res.json({ message: 'photo created!' });
+		} else {
+			return res.status(500).json({
+				message: 'Error when creating photo001wb'
+			});
+		}
+	});
 })
 
 
@@ -2033,41 +2031,41 @@ app.post('/api/photo001wb/photo', [upload.single("content")], (req, res) => {
  */
 
 app.put('/api/photo001wb/:id', [upload.single("content")], (req, res) => {
-    var id = req.params.id;
-    Photo001wb.findOne({ _id: id }, function (err, photo001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting photo001wb',
-                error: err
-            });
-        }
-        if (!photo001wb) {
-            return res.status(404).json({
-                message: 'No such photo001wb'
-            });
-        }
-        photo001wb.contentid = req.body.contentid ? req.body.contentid : photo001wb.contentid;
-        photo001wb.content = req.file.path ? req.file.path : photo001wb.content;
-        photo001wb.fieldname = req.file.fieldname ? req.file.fieldname : photo001wb.fieldname;
-        photo001wb.filename = req.file.filename ? req.file.filename : photo001wb.filename;
-        photo001wb.originalname = req.file.originalname ? req.file.originalname : photo001wb.originalname;
-        photo001wb.status = req.body.status ? req.body.status : photo001wb.status;
-        photo001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : photo001wb.inserteduser;
-        photo001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : photo001wb.inserteddatetime;
-        photo001wb.updateduser = req.body.updateduser ? req.body.updateduser : photo001wb.updateduser;
-        photo001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : photo001wb.updateddatetime;
+	var id = req.params.id;
+	Photo001wb.findOne({ _id: id }, function (err, photo001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting photo001wb',
+				error: err
+			});
+		}
+		if (!photo001wb) {
+			return res.status(404).json({
+				message: 'No such photo001wb'
+			});
+		}
+		photo001wb.contentid = req.body.contentid ? req.body.contentid : photo001wb.contentid;
+		photo001wb.content = req.file.path ? req.file.path : photo001wb.content;
+		photo001wb.fieldname = req.file.fieldname ? req.file.fieldname : photo001wb.fieldname;
+		photo001wb.filename = req.file.filename ? req.file.filename : photo001wb.filename;
+		photo001wb.originalname = req.file.originalname ? req.file.originalname : photo001wb.originalname;
+		photo001wb.status = req.body.status ? req.body.status : photo001wb.status;
+		photo001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : photo001wb.inserteduser;
+		photo001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : photo001wb.inserteddatetime;
+		photo001wb.updateduser = req.body.updateduser ? req.body.updateduser : photo001wb.updateduser;
+		photo001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : photo001wb.updateddatetime;
 
-        photo001wb.save(function (err, photo001wb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating photo001wb.',
-                    error: err
-                });
-            }
+		photo001wb.save(function (err, photo001wb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating photo001wb.',
+					error: err
+				});
+			}
 
-            return res.json(photo001wb);
-        });
-    });
+			return res.json(photo001wb);
+		});
+	});
 });
 
 /**
@@ -2093,17 +2091,17 @@ app.put('/api/photo001wb/:id', [upload.single("content")], (req, res) => {
  *         description: failed
  */
 app.delete('/api/photo001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Photo001wb.findByIdAndRemove(id, function (err, photo001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the photo001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Photo001wb.findByIdAndRemove(id, function (err, photo001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the photo001wb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -2164,16 +2162,16 @@ app.delete('/api/photo001wb/:id', (req, res) => {
  */
 
 app.get('/api/video001wb', (req, res) => {
-    Video001wb.find(function (err, video001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting video001wb.',
-                error: err
-            });
-        }
+	Video001wb.find(function (err, video001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting video001wb.',
+				error: err
+			});
+		}
 
-        return res.json(video001wb);
-    });
+		return res.json(video001wb);
+	});
 });
 
 /**
@@ -2204,23 +2202,23 @@ app.get('/api/video001wb', (req, res) => {
  */
 
 app.get('/api/video001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Video001wb.findOne({ _id: id }, function (err, video001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting video001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Video001wb.findOne({ _id: id }, function (err, video001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting video001wb.',
+				error: err
+			});
+		}
 
-        if (!video001wb) {
-            return res.status(404).json({
-                message: 'No such video001wb'
-            });
-        }
+		if (!video001wb) {
+			return res.status(404).json({
+				message: 'No such video001wb'
+			});
+		}
 
-        return res.json(video001wb);
-    });
+		return res.json(video001wb);
+	});
 });
 
 /**
@@ -2250,31 +2248,31 @@ app.get('/api/video001wb/:id', (req, res) => {
  */
 
 app.post('/api/video001wb/video', [videoUpload.single("content")], (req, res) => {
-    const video001wb = new Video001wb();
-    video001wb.flag = req.body.flag;
-    video001wb.fileid = req.body.fileid;
-    video001wb.contentid = req.body.contentid;
-    video001wb.content = req.file.path;
-    video001wb.fieldname = req.file.fieldname;
-    video001wb.originalname = req.file.originalname;
-    video001wb.filename = req.file.filename;
-    video001wb.status = req.body.status;
-    video001wb.inserteduser = req.body.inserteduser;
-    video001wb.inserteddatetime = req.body.inserteddatetime;
-    video001wb.updateduser = req.body.updateduser;
-    video001wb.updateddatetime = req.body.updateddatetime;
-    Contentmaster001mb.findOne({ _id: video001wb.contentid }, (err, user) => {
-        if (user) {
-            user.video.push(video001wb);
-            user.save();
-            video001wb.save()
-            return res.json({ message: 'Video created!' });
-        } else {
-            return res.status(500).json({
-                message: 'Error when creating video001wb'
-            });
-        }
-    });
+	const video001wb = new Video001wb();
+	video001wb.flag = req.body.flag;
+	video001wb.fileid = req.body.fileid;
+	video001wb.contentid = req.body.contentid;
+	video001wb.content = req.file.path;
+	video001wb.fieldname = req.file.fieldname;
+	video001wb.originalname = req.file.originalname;
+	video001wb.filename = req.file.filename;
+	video001wb.status = req.body.status;
+	video001wb.inserteduser = req.body.inserteduser;
+	video001wb.inserteddatetime = req.body.inserteddatetime;
+	video001wb.updateduser = req.body.updateduser;
+	video001wb.updateddatetime = req.body.updateddatetime;
+	Contentmaster001mb.findOne({ _id: video001wb.contentid }, (err, user) => {
+		if (user) {
+			user.video.push(video001wb);
+			user.save();
+			video001wb.save()
+			return res.json({ message: 'Video created!' });
+		} else {
+			return res.status(500).json({
+				message: 'Error when creating video001wb'
+			});
+		}
+	});
 })
 
 
@@ -2312,44 +2310,44 @@ app.post('/api/video001wb/video', [videoUpload.single("content")], (req, res) =>
  */
 
 app.put('/api/video001wb/:id', [videoUpload.single("content")], (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Video001wb.findOne({ _id: id }, function (err, video001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting video001wb',
-                error: err
-            });
-        }
+	Video001wb.findOne({ _id: id }, function (err, video001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting video001wb',
+				error: err
+			});
+		}
 
-        if (!video001wb) {
-            return res.status(404).json({
-                message: 'No such video001wb'
-            });
-        }
+		if (!video001wb) {
+			return res.status(404).json({
+				message: 'No such video001wb'
+			});
+		}
 
-        video001wb.contentid = req.body.contentid ? req.body.contentid : video001wb.contentid;
-        video001wb.fieldname = req.file.fieldname ? req.file.fieldname : video001wb.fieldname;
-        video001wb.filename = req.file.filename ? req.file.filename : video001wb.filename;
-        video001wb.originalname = req.file.originalname ? req.file.originalname : video001wb.originalname;
-        video001wb.status = req.body.status ? req.body.status : video001wb.status;
-        video001wb.content = req.file.path ? req.file.path : video001wb.content;
-        video001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : video001wb.inserteduser;
-        video001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : video001wb.inserteddatetime;
-        video001wb.updateduser = req.body.updateduser ? req.body.updateduser : video001wb.updateduser;
-        video001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : video001wb.updateddatetime;
+		video001wb.contentid = req.body.contentid ? req.body.contentid : video001wb.contentid;
+		video001wb.fieldname = req.file.fieldname ? req.file.fieldname : video001wb.fieldname;
+		video001wb.filename = req.file.filename ? req.file.filename : video001wb.filename;
+		video001wb.originalname = req.file.originalname ? req.file.originalname : video001wb.originalname;
+		video001wb.status = req.body.status ? req.body.status : video001wb.status;
+		video001wb.content = req.file.path ? req.file.path : video001wb.content;
+		video001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : video001wb.inserteduser;
+		video001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : video001wb.inserteddatetime;
+		video001wb.updateduser = req.body.updateduser ? req.body.updateduser : video001wb.updateduser;
+		video001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : video001wb.updateddatetime;
 
-        video001wb.save(function (err, video001wb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating video001wb.',
-                    error: err
-                });
-            }
+		video001wb.save(function (err, video001wb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating video001wb.',
+					error: err
+				});
+			}
 
-            return res.json(video001wb);
-        });
-    });
+			return res.json(video001wb);
+		});
+	});
 });
 
 
@@ -2376,17 +2374,17 @@ app.put('/api/video001wb/:id', [videoUpload.single("content")], (req, res) => {
  *         description: failed
  */
 app.delete('/api/video001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Video001wb.findByIdAndRemove(id, function (err, video001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the video001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Video001wb.findByIdAndRemove(id, function (err, video001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the video001wb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -2446,16 +2444,16 @@ app.delete('/api/video001wb/:id', (req, res) => {
  */
 
 app.get('/api/audio001wb', (req, res) => {
-    Audio001wb.find(function (err, audio001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting audio001wb.',
-                error: err
-            });
-        }
+	Audio001wb.find(function (err, audio001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting audio001wb.',
+				error: err
+			});
+		}
 
-        return res.json(audio001wb);
-    });
+		return res.json(audio001wb);
+	});
 });
 
 /**
@@ -2486,23 +2484,23 @@ app.get('/api/audio001wb', (req, res) => {
  */
 
 app.get('/api/audio001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Audio001wb.findOne({ _id: id }, function (err, audio001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting audio001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Audio001wb.findOne({ _id: id }, function (err, audio001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting audio001wb.',
+				error: err
+			});
+		}
 
-        if (!audio001wb) {
-            return res.status(404).json({
-                message: 'No such audio001wb'
-            });
-        }
+		if (!audio001wb) {
+			return res.status(404).json({
+				message: 'No such audio001wb'
+			});
+		}
 
-        return res.json(audio001wb);
-    });
+		return res.json(audio001wb);
+	});
 });
 
 /**
@@ -2532,32 +2530,32 @@ app.get('/api/audio001wb/:id', (req, res) => {
  */
 
 app.post('/api/audio001wb/audio', [audio.single("content")], (req, res) => {
-    const audio001wb = new Audio001wb();
-    audio001wb.flag = req.body.flag;
-    // audio001wb.content = req.file.path;
-    audio001wb.fileid = req.body.fileid;
-    audio001wb.fieldname = req.file.fieldname;
-    audio001wb.fieldname = req.file.fieldname;
-    audio001wb.originalname = req.file.originalname;
-    audio001wb.filename = req.file.filename;
-    audio001wb.status = req.body.status;
-    audio001wb.contentid = req.body.contentid;
-    audio001wb.inserteduser = req.body.inserteduser;
-    audio001wb.inserteddatetime = req.body.inserteddatetime;
-    audio001wb.updateduser = req.body.updateduser;
-    audio001wb.updateddatetime = req.body.updateddatetime;
-    Contentmaster001mb.findOne({ _id: audio001wb.contentid }, (err, user) => {
-        if (user) {
-            user.audio.push(audio001wb);
-            user.save();
-            audio001wb.save();
-            return res.json({ message: 'Audio created!' });
-        } else {
-            return res.status(500).json({
-                message: 'Error when creating audio001wb'
-            });
-        }
-    });
+	const audio001wb = new Audio001wb();
+	audio001wb.flag = req.body.flag;
+	// audio001wb.content = req.file.path;
+	audio001wb.fileid = req.body.fileid;
+	audio001wb.fieldname = req.file.fieldname;
+	audio001wb.fieldname = req.file.fieldname;
+	audio001wb.originalname = req.file.originalname;
+	audio001wb.filename = req.file.filename;
+	audio001wb.status = req.body.status;
+	audio001wb.contentid = req.body.contentid;
+	audio001wb.inserteduser = req.body.inserteduser;
+	audio001wb.inserteddatetime = req.body.inserteddatetime;
+	audio001wb.updateduser = req.body.updateduser;
+	audio001wb.updateddatetime = req.body.updateddatetime;
+	Contentmaster001mb.findOne({ _id: audio001wb.contentid }, (err, user) => {
+		if (user) {
+			user.audio.push(audio001wb);
+			user.save();
+			audio001wb.save();
+			return res.json({ message: 'Audio created!' });
+		} else {
+			return res.status(500).json({
+				message: 'Error when creating audio001wb'
+			});
+		}
+	});
 })
 
 /**
@@ -2594,45 +2592,45 @@ app.post('/api/audio001wb/audio', [audio.single("content")], (req, res) => {
  */
 
 app.put('/api/audio001wb/:id', [audio.single("content")], (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Audio001wb.findOne({ _id: id }, function (err, audio001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting audio001wb',
-                error: err
-            });
-        }
+	Audio001wb.findOne({ _id: id }, function (err, audio001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting audio001wb',
+				error: err
+			});
+		}
 
-        if (!audio001wb) {
-            return res.status(404).json({
-                message: 'No such audio001wb'
-            });
-        }
-        audio001wb.flag = req.body.flag;
-        audio001wb.contentid = req.body.contentid ? req.body.contentid : audio001wb.contentid;
-        audio001wb.fileid = req.body.fileid ? req.body.fileid : audio001wb.fileid;
-        // audio001wb.fieldname = req.file.fieldname ? req.file.fieldname : audio001wb.fieldname;
-        // audio001wb.filename = req.file.filename ? req.file.filename : audio001wb.filename;
-        // audio001wb.originalname = req.file.originalname ? req.file.originalname : audio001wb.originalname;
-        audio001wb.status = req.body.status ? req.body.status : audio001wb.status;
-        // audio001wb.content = req.file.path ? req.file.path : audio001wb.content;
-        audio001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : audio001wb.inserteduser;
-        audio001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : audio001wb.inserteddatetime;
-        audio001wb.updateduser = req.body.updateduser ? req.body.updateduser : audio001wb.updateduser;
-        audio001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : audio001wb.updateddatetime;
+		if (!audio001wb) {
+			return res.status(404).json({
+				message: 'No such audio001wb'
+			});
+		}
+		audio001wb.flag = req.body.flag;
+		audio001wb.contentid = req.body.contentid ? req.body.contentid : audio001wb.contentid;
+		audio001wb.fileid = req.body.fileid ? req.body.fileid : audio001wb.fileid;
+		// audio001wb.fieldname = req.file.fieldname ? req.file.fieldname : audio001wb.fieldname;
+		// audio001wb.filename = req.file.filename ? req.file.filename : audio001wb.filename;
+		// audio001wb.originalname = req.file.originalname ? req.file.originalname : audio001wb.originalname;
+		audio001wb.status = req.body.status ? req.body.status : audio001wb.status;
+		// audio001wb.content = req.file.path ? req.file.path : audio001wb.content;
+		audio001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : audio001wb.inserteduser;
+		audio001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : audio001wb.inserteddatetime;
+		audio001wb.updateduser = req.body.updateduser ? req.body.updateduser : audio001wb.updateduser;
+		audio001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : audio001wb.updateddatetime;
 
-        audio001wb.save(function (err, audio001wb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating audio001wb.',
-                    error: err
-                });
-            }
+		audio001wb.save(function (err, audio001wb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating audio001wb.',
+					error: err
+				});
+			}
 
-            return res.json(audio001wb);
-        });
-    });
+			return res.json(audio001wb);
+		});
+	});
 });
 /**
  * @swagger
@@ -2657,17 +2655,17 @@ app.put('/api/audio001wb/:id', [audio.single("content")], (req, res) => {
  *         description: failed
  */
 app.delete('/api/audio001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Audio001wb.findByIdAndRemove(id, function (err, audio001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the audio001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Audio001wb.findByIdAndRemove(id, function (err, audio001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the audio001wb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -2738,16 +2736,16 @@ app.delete('/api/audio001wb/:id', (req, res) => {
  */
 
 app.get('/api/contentmaster001mb', (req, res) => {
-    Contentmaster001mb.find(function (err, contentmaster001mbs) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting contentmaster001mb.',
-                error: err
-            });
-        }
+	Contentmaster001mb.find(function (err, contentmaster001mbs) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting contentmaster001mb.',
+				error: err
+			});
+		}
 
-        return res.json(contentmaster001mbs);
-    });
+		return res.json(contentmaster001mbs);
+	});
 });
 
 /**
@@ -2778,24 +2776,24 @@ app.get('/api/contentmaster001mb', (req, res) => {
  */
 
 app.get('/api/contentmaster001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Contentmaster001mb.findOne({ _id: id }, function (err, contentmaster001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting contentmaster001mb.',
-                error: err
-            });
-        }
+	Contentmaster001mb.findOne({ _id: id }, function (err, contentmaster001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting contentmaster001mb.',
+				error: err
+			});
+		}
 
-        if (!contentmaster001mb) {
-            return res.status(404).json({
-                message: 'No such contentmaster001mb'
-            });
-        }
+		if (!contentmaster001mb) {
+			return res.status(404).json({
+				message: 'No such contentmaster001mb'
+			});
+		}
 
-        return res.json(contentmaster001mb);
-    });
+		return res.json(contentmaster001mb);
+	});
 });
 
 /**
@@ -2821,28 +2819,28 @@ app.get('/api/contentmaster001mb/:id', (req, res) => {
  */
 
 app.post('/api/contentmaster001mb/master', (req, res) => {
-    const contentmaster001mb = new Contentmaster001mb();
-    contentmaster001mb.name = req.body.name;
-    contentmaster001mb.description = req.body.description;
-    contentmaster001mb.size = req.body.size;
-    contentmaster001mb.quality = req.body.quality;
-    contentmaster001mb.format = req.body.format;
-    contentmaster001mb.status = req.body.status;
-    contentmaster001mb.discountflag = req.body.discountflag;
-    contentmaster001mb.inserteduser = req.body.inserteduser;
-    contentmaster001mb.inserteddatetime = req.body.inserteddatetime;
-    contentmaster001mb.updateduser = req.body.updateduser;
-    contentmaster001mb.updateddatetime = req.body.updateddatetime;
-    contentmaster001mb.subid = req.body.subid.id;
-    contentmaster001mb.save(function (err, contentmaster001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when creating contentmaster001mb',
-                error: err
-            });
-        }
-        return res.status(201).json('Contentmaster001mb Created! ');
-    });
+	const contentmaster001mb = new Contentmaster001mb();
+	contentmaster001mb.name = req.body.name;
+	contentmaster001mb.description = req.body.description;
+	contentmaster001mb.size = req.body.size;
+	contentmaster001mb.quality = req.body.quality;
+	contentmaster001mb.format = req.body.format;
+	contentmaster001mb.status = req.body.status;
+	contentmaster001mb.discountflag = req.body.discountflag;
+	contentmaster001mb.inserteduser = req.body.inserteduser;
+	contentmaster001mb.inserteddatetime = req.body.inserteddatetime;
+	contentmaster001mb.updateduser = req.body.updateduser;
+	contentmaster001mb.updateddatetime = req.body.updateddatetime;
+	contentmaster001mb.subid = req.body.subid.id;
+	contentmaster001mb.save(function (err, contentmaster001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when creating contentmaster001mb',
+				error: err
+			});
+		}
+		return res.status(201).json('Contentmaster001mb Created! ');
+	});
 })
 
 
@@ -2880,46 +2878,46 @@ app.post('/api/contentmaster001mb/master', (req, res) => {
  */
 
 app.put('/api/contentmaster001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Contentmaster001mb.findOne({ _id: id }, function (err, contentmaster001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting contentmaster001mb',
-                error: err
-            });
-        }
+	Contentmaster001mb.findOne({ _id: id }, function (err, contentmaster001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting contentmaster001mb',
+				error: err
+			});
+		}
 
-        if (!contentmaster001mb) {
-            return res.status(404).json({
-                message: 'No such contentmaster001mb'
-            });
-        }
+		if (!contentmaster001mb) {
+			return res.status(404).json({
+				message: 'No such contentmaster001mb'
+			});
+		}
 
-        contentmaster001mb.subid = req.body.subid.id ? req.body.subid.id : contentmaster001mb.subid;
-        contentmaster001mb.name = req.body.name ? req.body.name : contentmaster001mb.name;
-        contentmaster001mb.description = req.body.description ? req.body.description : contentmaster001mb.description;
-        contentmaster001mb.size = req.body.size ? req.body.size : contentmaster001mb.size;
-        contentmaster001mb.quality = req.body.quality ? req.body.quality : contentmaster001mb.quality;
-        contentmaster001mb.format = req.body.format ? req.body.format : contentmaster001mb.format;
-        contentmaster001mb.status = req.body.status ? req.body.status : contentmaster001mb.status;
-        contentmaster001mb.discountflag = req.body.discountflag ? req.body.discountflag : contentmaster001mb.discountflag;
-        contentmaster001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : contentmaster001mb.inserteduser;
-        contentmaster001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : contentmaster001mb.inserteddatetime;
-        contentmaster001mb.updateduser = req.body.updateduser ? req.body.updateduser : contentmaster001mb.updateduser;
-        contentmaster001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : contentmaster001mb.updateddatetime;
+		contentmaster001mb.subid = req.body.subid.id ? req.body.subid.id : contentmaster001mb.subid;
+		contentmaster001mb.name = req.body.name ? req.body.name : contentmaster001mb.name;
+		contentmaster001mb.description = req.body.description ? req.body.description : contentmaster001mb.description;
+		contentmaster001mb.size = req.body.size ? req.body.size : contentmaster001mb.size;
+		contentmaster001mb.quality = req.body.quality ? req.body.quality : contentmaster001mb.quality;
+		contentmaster001mb.format = req.body.format ? req.body.format : contentmaster001mb.format;
+		contentmaster001mb.status = req.body.status ? req.body.status : contentmaster001mb.status;
+		contentmaster001mb.discountflag = req.body.discountflag ? req.body.discountflag : contentmaster001mb.discountflag;
+		contentmaster001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : contentmaster001mb.inserteduser;
+		contentmaster001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : contentmaster001mb.inserteddatetime;
+		contentmaster001mb.updateduser = req.body.updateduser ? req.body.updateduser : contentmaster001mb.updateduser;
+		contentmaster001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : contentmaster001mb.updateddatetime;
 
-        contentmaster001mb.save(function (err, contentmaster001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating contentmaster001mb.',
-                    error: err
-                });
-            }
+		contentmaster001mb.save(function (err, contentmaster001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating contentmaster001mb.',
+					error: err
+				});
+			}
 
-            return res.json(contentmaster001mb);
-        });
-    });
+			return res.json(contentmaster001mb);
+		});
+	});
 });
 /**
  * @swagger
@@ -2944,18 +2942,18 @@ app.put('/api/contentmaster001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/contentmaster001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Contentmaster001mb.findByIdAndRemove(id, function (err, contentmaster001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the contentmaster001mb.',
-                error: err
-            });
-        }
+	Contentmaster001mb.findByIdAndRemove(id, function (err, contentmaster001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the contentmaster001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -3003,16 +3001,16 @@ app.delete('/api/contentmaster001mb/:id', (req, res) => {
  */
 
 app.get('/api/categorydetails001mb', (req, res) => {
-    Categorydetails001mb.find(function (err, categorydetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting categorydetails001mb.',
-                error: err
-            });
-        }
+	Categorydetails001mb.find(function (err, categorydetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting categorydetails001mb.',
+				error: err
+			});
+		}
 
-        return res.json(categorydetails001mb);
-    });
+		return res.json(categorydetails001mb);
+	});
 });
 
 /**
@@ -3043,24 +3041,24 @@ app.get('/api/categorydetails001mb', (req, res) => {
  */
 
 app.get('/api/categorydetails001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Categorydetails001mb.findOne({ _id: id }, function (err, categorydetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting categorydetails001mb.',
-                error: err
-            });
-        }
+	Categorydetails001mb.findOne({ _id: id }, function (err, categorydetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting categorydetails001mb.',
+				error: err
+			});
+		}
 
-        if (!categorydetails001mb) {
-            return res.status(404).json({
-                message: 'No such categorydetails001mb'
-            });
-        }
+		if (!categorydetails001mb) {
+			return res.status(404).json({
+				message: 'No such categorydetails001mb'
+			});
+		}
 
-        return res.json(categorydetails001mb);
-    });
+		return res.json(categorydetails001mb);
+	});
 });
 
 /**
@@ -3086,20 +3084,20 @@ app.get('/api/categorydetails001mb/:id', (req, res) => {
  */
 
 app.post('/api/categorydetails001mb/category', (req, res) => {
-    const categorydetails001mb = new Categorydetails001mb()
-    categorydetails001mb.catname = req.body.catname;
-    categorydetails001mb.status = req.body.status;
-    categorydetails001mb.inserteduser = req.body.inserteduser;
-    categorydetails001mb.inserteddatetime = req.body.inserteddatetime;
-    categorydetails001mb.updateduser = req.body.updateduser;
-    categorydetails001mb.updateddatetime = req.body.updateddatetime;
-    categorydetails001mb.save()
-        .then((result) => {
-            return res.json({ message: 'categorydetails created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	const categorydetails001mb = new Categorydetails001mb()
+	categorydetails001mb.catname = req.body.catname;
+	categorydetails001mb.status = req.body.status;
+	categorydetails001mb.inserteduser = req.body.inserteduser;
+	categorydetails001mb.inserteddatetime = req.body.inserteddatetime;
+	categorydetails001mb.updateduser = req.body.updateduser;
+	categorydetails001mb.updateddatetime = req.body.updateddatetime;
+	categorydetails001mb.save()
+		.then((result) => {
+			return res.json({ message: 'categorydetails created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 
 
@@ -3137,38 +3135,38 @@ app.post('/api/categorydetails001mb/category', (req, res) => {
  */
 
 app.put('/api/categorydetails001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Categorydetails001mb.findOne({ _id: id }, function (err, categorydetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting categorydetails001mb',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Categorydetails001mb.findOne({ _id: id }, function (err, categorydetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting categorydetails001mb',
+				error: err
+			});
+		}
 
-        if (!categorydetails001mb) {
-            return res.status(404).json({
-                message: 'No such categorydetails001mb'
-            });
-        }
-        categorydetails001mb.catname = req.body.catname ? req.body.catname : categorydetails001mb.catname;
-        categorydetails001mb.status = req.body.status ? req.body.status : categorydetails001mb.status;
-        categorydetails001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : categorydetails001mb.inserteduser;
-        categorydetails001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : categorydetails001mb.inserteddatetime;
-        categorydetails001mb.updateduser = req.body.updateduser ? req.body.updateduser : categorydetails001mb.updateduser;
-        categorydetails001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : categorydetails001mb.updateddatetime;
+		if (!categorydetails001mb) {
+			return res.status(404).json({
+				message: 'No such categorydetails001mb'
+			});
+		}
+		categorydetails001mb.catname = req.body.catname ? req.body.catname : categorydetails001mb.catname;
+		categorydetails001mb.status = req.body.status ? req.body.status : categorydetails001mb.status;
+		categorydetails001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : categorydetails001mb.inserteduser;
+		categorydetails001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : categorydetails001mb.inserteddatetime;
+		categorydetails001mb.updateduser = req.body.updateduser ? req.body.updateduser : categorydetails001mb.updateduser;
+		categorydetails001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : categorydetails001mb.updateddatetime;
 
-        categorydetails001mb.save(function (err, categorydetails001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating categorydetails001mb.',
-                    error: err
-                });
-            }
+		categorydetails001mb.save(function (err, categorydetails001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating categorydetails001mb.',
+					error: err
+				});
+			}
 
-            return res.json(categorydetails001mb);
-        });
-    });
+			return res.json(categorydetails001mb);
+		});
+	});
 });
 /**
  * @swagger
@@ -3193,18 +3191,18 @@ app.put('/api/categorydetails001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/categorydetails001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Categorydetails001mb.findByIdAndRemove(id, function (err, categorydetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the categorydetails001mb.',
-                error: err
-            });
-        }
+	Categorydetails001mb.findByIdAndRemove(id, function (err, categorydetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the categorydetails001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 // ********************** companydetails001mb schema method****************//
@@ -3259,16 +3257,16 @@ app.delete('/api/categorydetails001mb/:id', (req, res) => {
  */
 
 app.get('/api/companydetails001mb', (req, res) => {
-    Companydetails001mb.find(function (err, companydetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting companydetails001mb.',
-                error: err
-            });
-        }
+	Companydetails001mb.find(function (err, companydetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting companydetails001mb.',
+				error: err
+			});
+		}
 
-        return res.json(companydetails001mb);
-    });
+		return res.json(companydetails001mb);
+	});
 });
 
 /**
@@ -3299,23 +3297,23 @@ app.get('/api/companydetails001mb', (req, res) => {
  */
 
 app.get('/api/companydetails001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Companydetails001mb.findOne({ _id: id }, function (err, companydetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting companydetails001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Companydetails001mb.findOne({ _id: id }, function (err, companydetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting companydetails001mb.',
+				error: err
+			});
+		}
 
-        if (!companydetails001mb) {
-            return res.status(404).json({
-                message: 'No such companydetails001mb'
-            });
-        }
+		if (!companydetails001mb) {
+			return res.status(404).json({
+				message: 'No such companydetails001mb'
+			});
+		}
 
-        return res.json(companydetails001mb);
-    });
+		return res.json(companydetails001mb);
+	});
 });
 
 /**
@@ -3341,23 +3339,23 @@ app.get('/api/companydetails001mb/:id', (req, res) => {
  */
 
 app.post('/api/companydetails001mb/company', (req, res) => {
-    const companydetails001mb = new Companydetails001mb();
-    companydetails001mb.regionalid = req.body.regionalid.id;
-    companydetails001mb.companyname = req.body.companyname;
-    companydetails001mb.address = req.body.address;
-    companydetails001mb.phonenumber = req.body.phonenumber;
-    companydetails001mb.status = req.body.status;
-    companydetails001mb.inserteduser = req.body.inserteduser;
-    companydetails001mb.inserteddatetime = req.body.inserteddatetime;
-    companydetails001mb.updateduser = req.body.updateduser;
-    companydetails001mb.updateddatetime = req.body.updateddatetime;
-    companydetails001mb.save()
-        .then((result) => {
-            return res.json({ message: 'companydetails created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	const companydetails001mb = new Companydetails001mb();
+	companydetails001mb.regionalid = req.body.regionalid.id;
+	companydetails001mb.companyname = req.body.companyname;
+	companydetails001mb.address = req.body.address;
+	companydetails001mb.phonenumber = req.body.phonenumber;
+	companydetails001mb.status = req.body.status;
+	companydetails001mb.inserteduser = req.body.inserteduser;
+	companydetails001mb.inserteddatetime = req.body.inserteddatetime;
+	companydetails001mb.updateduser = req.body.updateduser;
+	companydetails001mb.updateddatetime = req.body.updateddatetime;
+	companydetails001mb.save()
+		.then((result) => {
+			return res.json({ message: 'companydetails created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 /**
  * @swagger
@@ -3393,41 +3391,41 @@ app.post('/api/companydetails001mb/company', (req, res) => {
  */
 
 app.put('/api/companydetails001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Companydetails001mb.findOne({ _id: id }, function (err, companydetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting companydetails001mb',
-                error: err
-            });
-        }
+	Companydetails001mb.findOne({ _id: id }, function (err, companydetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting companydetails001mb',
+				error: err
+			});
+		}
 
-        if (!companydetails001mb) {
-            return res.status(404).json({
-                message: 'No such companydetails001mb'
-            });
-        }
-        companydetails001mb.companyname = req.body.companyname ? req.body.companyname : companydetails001mb.companyname;
-        companydetails001mb.address = req.body.address ? req.body.address : companydetails001mb.address;
-        companydetails001mb.phonenumber = req.body.phonenumber ? req.body.phonenumber : companydetails001mb.phonenumber;
-        companydetails001mb.regionalid = req.body.regionalid.id ? req.body.regionalid.id : companydetails001mb.regionalid;
-        companydetails001mb.status = req.body.status ? req.body.status : companydetails001mb.status;
-        companydetails001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : companydetails001mb.inserteduser;
-        companydetails001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : companydetails001mb.inserteddatetime;
-        companydetails001mb.updateduser = req.body.updateduser ? req.body.updateduser : companydetails001mb.updateduser;
-        companydetails001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : companydetails001mb.updateddatetime;
-        companydetails001mb.save(function (err, companydetails001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating companydetails001mb.',
-                    error: err
-                });
-            }
+		if (!companydetails001mb) {
+			return res.status(404).json({
+				message: 'No such companydetails001mb'
+			});
+		}
+		companydetails001mb.companyname = req.body.companyname ? req.body.companyname : companydetails001mb.companyname;
+		companydetails001mb.address = req.body.address ? req.body.address : companydetails001mb.address;
+		companydetails001mb.phonenumber = req.body.phonenumber ? req.body.phonenumber : companydetails001mb.phonenumber;
+		companydetails001mb.regionalid = req.body.regionalid.id ? req.body.regionalid.id : companydetails001mb.regionalid;
+		companydetails001mb.status = req.body.status ? req.body.status : companydetails001mb.status;
+		companydetails001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : companydetails001mb.inserteduser;
+		companydetails001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : companydetails001mb.inserteddatetime;
+		companydetails001mb.updateduser = req.body.updateduser ? req.body.updateduser : companydetails001mb.updateduser;
+		companydetails001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : companydetails001mb.updateddatetime;
+		companydetails001mb.save(function (err, companydetails001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating companydetails001mb.',
+					error: err
+				});
+			}
 
-            return res.json(companydetails001mb);
-        });
-    });
+			return res.json(companydetails001mb);
+		});
+	});
 });
 /**
  * @swagger
@@ -3452,17 +3450,17 @@ app.put('/api/companydetails001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/companydetails001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Companydetails001mb.findByIdAndRemove(id, function (err, companydetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the companydetails001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Companydetails001mb.findByIdAndRemove(id, function (err, companydetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the companydetails001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 // ********************** language001mb schema method****************//
@@ -3511,16 +3509,16 @@ app.delete('/api/companydetails001mb/:id', (req, res) => {
  */
 
 app.get('/api/language001mb', (req, res) => {
-    Language001mb.find(function (err, language001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting language001mb.',
-                error: err
-            });
-        }
+	Language001mb.find(function (err, language001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting language001mb.',
+				error: err
+			});
+		}
 
-        return res.json(language001mb);
-    });
+		return res.json(language001mb);
+	});
 });
 
 /**
@@ -3551,24 +3549,24 @@ app.get('/api/language001mb', (req, res) => {
  */
 
 app.get('/api/language001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Language001mb.findOne({ _id: id }, function (err, language001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting language001mb.',
-                error: err
-            });
-        }
+	Language001mb.findOne({ _id: id }, function (err, language001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting language001mb.',
+				error: err
+			});
+		}
 
-        if (!language001mb) {
-            return res.status(404).json({
-                message: 'No such language001mb'
-            });
-        }
+		if (!language001mb) {
+			return res.status(404).json({
+				message: 'No such language001mb'
+			});
+		}
 
-        return res.json(language001mb);
-    });
+		return res.json(language001mb);
+	});
 });
 
 /**
@@ -3594,22 +3592,22 @@ app.get('/api/language001mb/:id', (req, res) => {
  */
 
 app.post('/api/language001mb/language', verifyToken, rolebaseauth(["admin"]), (req, res) => {
-    const language001mb = new Language001mb()
-    language001mb.languagename = req.body.languagename;
-    language001mb.languagedesc = req.body.languagedesc;
-    language001mb.status = req.body.status;
-    language001mb.inserteduser = req.body.inserteduser;
-    language001mb.inserteddatetime = req.body.inserteddatetime;
-    language001mb.updateduser = req.body.updateduser;
-    language001mb.updateddatetime = req.body.updateddatetime;
+	const language001mb = new Language001mb()
+	language001mb.languagename = req.body.languagename;
+	language001mb.languagedesc = req.body.languagedesc;
+	language001mb.status = req.body.status;
+	language001mb.inserteduser = req.body.inserteduser;
+	language001mb.inserteddatetime = req.body.inserteddatetime;
+	language001mb.updateduser = req.body.updateduser;
+	language001mb.updateddatetime = req.body.updateddatetime;
 
-    language001mb.save()
-        .then((result) => {
-            return res.json({ message: 'language created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	language001mb.save()
+		.then((result) => {
+			return res.json({ message: 'language created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 /**
  * @swagger
@@ -3645,38 +3643,38 @@ app.post('/api/language001mb/language', verifyToken, rolebaseauth(["admin"]), (r
  */
 
 app.put('/api/language001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Language001mb.findOne({ _id: id }, function (err, language001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting language001mb',
-                error: err
-            });
-        }
-        if (!language001mb) {
-            return res.status(404).json({
-                message: 'No such language001mb'
-            });
-        }
-        language001mb.languagename = req.body.languagename ? req.body.languagename : language001mb.languagename;
-        language001mb.languagedesc = req.body.languagedesc ? req.body.languagedesc : language001mb.languagedesc;
-        language001mb.status = req.body.status ? req.body.status : language001mb.status;
-        language001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : language001mb.inserteduser;
-        language001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : language001mb.inserteddatetime;
-        language001mb.updateduser = req.body.updateduser ? req.body.updateduser : language001mb.updateduser;
-        language001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : language001mb.updateddatetime;
-        language001mb.save(function (err, language001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating language001mb.',
-                    error: err
-                });
-            }
+	Language001mb.findOne({ _id: id }, function (err, language001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting language001mb',
+				error: err
+			});
+		}
+		if (!language001mb) {
+			return res.status(404).json({
+				message: 'No such language001mb'
+			});
+		}
+		language001mb.languagename = req.body.languagename ? req.body.languagename : language001mb.languagename;
+		language001mb.languagedesc = req.body.languagedesc ? req.body.languagedesc : language001mb.languagedesc;
+		language001mb.status = req.body.status ? req.body.status : language001mb.status;
+		language001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : language001mb.inserteduser;
+		language001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : language001mb.inserteddatetime;
+		language001mb.updateduser = req.body.updateduser ? req.body.updateduser : language001mb.updateduser;
+		language001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : language001mb.updateddatetime;
+		language001mb.save(function (err, language001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating language001mb.',
+					error: err
+				});
+			}
 
-            return res.json(language001mb);
-        });
-    });
+			return res.json(language001mb);
+		});
+	});
 });
 /**
  * @swagger
@@ -3701,18 +3699,18 @@ app.put('/api/language001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/language001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Language001mb.findByIdAndRemove(id, function (err, language001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the language001mb.',
-                error: err
-            });
-        }
+	Language001mb.findByIdAndRemove(id, function (err, language001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the language001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -3764,16 +3762,16 @@ app.delete('/api/language001mb/:id', (req, res) => {
  */
 
 app.get('/api/regionaldetails001mb', (req, res) => {
-    Regionaldetails001mb.find(function (err, regionaldetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting regionaldetails001mb.',
-                error: err
-            });
-        }
+	Regionaldetails001mb.find(function (err, regionaldetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting regionaldetails001mb.',
+				error: err
+			});
+		}
 
-        return res.json(regionaldetails001mb);
-    });
+		return res.json(regionaldetails001mb);
+	});
 });
 
 /**
@@ -3804,24 +3802,24 @@ app.get('/api/regionaldetails001mb', (req, res) => {
  */
 
 app.get('/api/regionaldetails001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Regionaldetails001mb.findOne({ _id: id }, function (err, regionaldetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting regionaldetails001mb.',
-                error: err
-            });
-        }
+	Regionaldetails001mb.findOne({ _id: id }, function (err, regionaldetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting regionaldetails001mb.',
+				error: err
+			});
+		}
 
-        if (!regionaldetails001mb) {
-            return res.status(404).json({
-                message: 'No such regionaldetails001mb'
-            });
-        }
+		if (!regionaldetails001mb) {
+			return res.status(404).json({
+				message: 'No such regionaldetails001mb'
+			});
+		}
 
-        return res.json(regionaldetails001mb);
-    });
+		return res.json(regionaldetails001mb);
+	});
 });
 
 /**
@@ -3847,21 +3845,21 @@ app.get('/api/regionaldetails001mb/:id', (req, res) => {
  */
 
 app.post('/api/regionaldetails001mb/regional', (req, res) => {
-    const regionaldetails001mb = new Regionaldetails001mb();
-    regionaldetails001mb.regionalname = req.body.regionalname;
-    regionaldetails001mb.regionaldesc = req.body.regionaldesc;
-    regionaldetails001mb.status = req.body.status;
-    regionaldetails001mb.inserteduser = req.body.inserteduser;
-    regionaldetails001mb.inserteddatetime = req.body.inserteddatetime;
-    regionaldetails001mb.updateduser = req.body.updateduser;
-    regionaldetails001mb.updateddatetime = req.body.updateddatetime;
-    regionaldetails001mb.save()
-        .then((result) => {
-            return res.json({ message: 'regionaldetails created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	const regionaldetails001mb = new Regionaldetails001mb();
+	regionaldetails001mb.regionalname = req.body.regionalname;
+	regionaldetails001mb.regionaldesc = req.body.regionaldesc;
+	regionaldetails001mb.status = req.body.status;
+	regionaldetails001mb.inserteduser = req.body.inserteduser;
+	regionaldetails001mb.inserteddatetime = req.body.inserteddatetime;
+	regionaldetails001mb.updateduser = req.body.updateduser;
+	regionaldetails001mb.updateddatetime = req.body.updateddatetime;
+	regionaldetails001mb.save()
+		.then((result) => {
+			return res.json({ message: 'regionaldetails created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 /**
  * @swagger
@@ -3897,40 +3895,40 @@ app.post('/api/regionaldetails001mb/regional', (req, res) => {
  */
 
 app.put('/api/regionaldetails001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Regionaldetails001mb.findOne({ _id: id }, function (err, regionaldetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting regionaldetails001mb',
-                error: err
-            });
-        }
+	Regionaldetails001mb.findOne({ _id: id }, function (err, regionaldetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting regionaldetails001mb',
+				error: err
+			});
+		}
 
-        if (!regionaldetails001mb) {
-            return res.status(404).json({
-                message: 'No such regionaldetails001mb'
-            });
-        }
-        regionaldetails001mb.regionalname = req.body.regionalname ? req.body.regionalname : regionaldetails001mb.regionalname;
-        regionaldetails001mb.regionaldesc = req.body.regionaldesc ? req.body.regionaldesc : regionaldetails001mb.regionaldesc;
-        regionaldetails001mb.status = req.body.status ? req.body.status : regionaldetails001mb.status;
-        regionaldetails001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : regionaldetails001mb.inserteduser;
-        regionaldetails001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : regionaldetails001mb.inserteddatetime;
-        regionaldetails001mb.updateduser = req.body.updateduser ? req.body.updateduser : regionaldetails001mb.updateduser;
-        regionaldetails001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : regionaldetails001mb.updateddatetime;
+		if (!regionaldetails001mb) {
+			return res.status(404).json({
+				message: 'No such regionaldetails001mb'
+			});
+		}
+		regionaldetails001mb.regionalname = req.body.regionalname ? req.body.regionalname : regionaldetails001mb.regionalname;
+		regionaldetails001mb.regionaldesc = req.body.regionaldesc ? req.body.regionaldesc : regionaldetails001mb.regionaldesc;
+		regionaldetails001mb.status = req.body.status ? req.body.status : regionaldetails001mb.status;
+		regionaldetails001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : regionaldetails001mb.inserteduser;
+		regionaldetails001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : regionaldetails001mb.inserteddatetime;
+		regionaldetails001mb.updateduser = req.body.updateduser ? req.body.updateduser : regionaldetails001mb.updateduser;
+		regionaldetails001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : regionaldetails001mb.updateddatetime;
 
-        regionaldetails001mb.save(function (err, regionaldetails001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating regionaldetails001mb.',
-                    error: err
-                });
-            }
+		regionaldetails001mb.save(function (err, regionaldetails001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating regionaldetails001mb.',
+					error: err
+				});
+			}
 
-            return res.json(regionaldetails001mb);
-        });
-    });
+			return res.json(regionaldetails001mb);
+		});
+	});
 });
 /**
  * @swagger
@@ -3955,18 +3953,18 @@ app.put('/api/regionaldetails001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/regionaldetails001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Regionaldetails001mb.findByIdAndRemove(id, function (err, regionaldetails001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the regionaldetails001mb.',
-                error: err
-            });
-        }
+	Regionaldetails001mb.findByIdAndRemove(id, function (err, regionaldetails001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the regionaldetails001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -4029,16 +4027,16 @@ app.delete('/api/regionaldetails001mb/:id', (req, res) => {
  */
 
 app.get('/api/login001mb', (req, res) => {
-    Login001mb.find(function (err, login001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting login001mb.',
-                error: err
-            });
-        }
+	Login001mb.find(function (err, login001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting login001mb.',
+				error: err
+			});
+		}
 
-        return res.json(login001mb);
-    });
+		return res.json(login001mb);
+	});
 });
 
 /**
@@ -4069,23 +4067,23 @@ app.get('/api/login001mb', (req, res) => {
  */
 
 app.get('/api/login001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Login001mb.findOne({ _id: id }, function (err, login001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting login001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Login001mb.findOne({ _id: id }, function (err, login001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting login001mb.',
+				error: err
+			});
+		}
 
-        if (!login001mb) {
-            return res.status(404).json({
-                message: 'No such login001mb'
-            });
-        }
+		if (!login001mb) {
+			return res.status(404).json({
+				message: 'No such login001mb'
+			});
+		}
 
-        return res.json(login001mb);
-    });
+		return res.json(login001mb);
+	});
 });
 
 
@@ -4123,32 +4121,32 @@ app.get('/api/login001mb/:id', (req, res) => {
 
 
 app.get('/api/login001mb/:username/:password', async (req, res) => {
-    var username = req.params.username;
-    var password = req.params.password;
-    const loginperson = await Login001mb.findOne({ username: username }).populate({ path: 'roleid', model: Role001mb });
-    if (loginperson) {
-        const security = await bcrypt.compare(password, loginperson.password)
-        if (security) {
-            const person = await Person001mb.findOne({ _id: loginperson.personid });
-            const token = jwt.sign({ username: loginperson.username, rolename: loginperson.roleid.rolename }, process.env.TOKEN_KEY,
-                {
-                    expiresIn: "6h",
-                }
-            );
-            return res.json({
-                data: { person: person, token: token }
-            });
+	var username = req.params.username;
+	var password = req.params.password;
+	const loginperson = await Login001mb.findOne({ username: username }).populate({ path: 'roleid', model: Role001mb });
+	if (loginperson) {
+		const security = await bcrypt.compare(password, loginperson.password)
+		if (security) {
+			const person = await Person001mb.findOne({ _id: loginperson.personid });
+			const token = jwt.sign({ username: loginperson.username, rolename: loginperson.roleid.rolename }, process.env.TOKEN_KEY,
+				{
+					expiresIn: "6h",
+				}
+			);
+			return res.json({
+				data: { person: person, token: token }
+			});
 
-        } else {
-            return res.status(500).json({
-                message: 'invalid password'
-            });
-        }
-    } else {
-        return res.status(500).json({
-            message: 'invalid username'
-        });
-    }
+		} else {
+			return res.status(500).json({
+				message: 'invalid password'
+			});
+		}
+	} else {
+		return res.status(500).json({
+			message: 'invalid username'
+		});
+	}
 });
 // ********************** person001mb schema method****************//
 /** 
@@ -4293,16 +4291,16 @@ app.get('/api/login001mb/:username/:password', async (req, res) => {
  */
 
 app.get('/api/person001mb', (req, res) => {
-    Person001mb.find(function (err, person001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting person001mb.',
-                error: err
-            });
-        }
+	Person001mb.find(function (err, person001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting person001mb.',
+				error: err
+			});
+		}
 
-        return res.json(person001mb);
-    });
+		return res.json(person001mb);
+	});
 });
 
 /**
@@ -4333,23 +4331,23 @@ app.get('/api/person001mb', (req, res) => {
  */
 
 app.get('/api/person001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Person001mb.findOne({ _id: id }, function (err, person001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting person001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Person001mb.findOne({ _id: id }, function (err, person001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting person001mb.',
+				error: err
+			});
+		}
 
-        if (!person001mb) {
-            return res.status(404).json({
-                message: 'No such person001mb'
-            });
-        }
+		if (!person001mb) {
+			return res.status(404).json({
+				message: 'No such person001mb'
+			});
+		}
 
-        return res.json(person001mb);
-    });
+		return res.json(person001mb);
+	});
 });
 // ********************** religion001mb schema method****************//
 /** 
@@ -4397,16 +4395,16 @@ app.get('/api/person001mb/:id', (req, res) => {
  */
 
 app.get('/api/religion001mb', (req, res) => {
-    Religion001mb.find(function (err, religion001mbs) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting religion001mb.',
-                error: err
-            });
-        }
+	Religion001mb.find(function (err, religion001mbs) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting religion001mb.',
+				error: err
+			});
+		}
 
-        return res.json(religion001mbs);
-    });
+		return res.json(religion001mbs);
+	});
 });
 
 /**
@@ -4437,23 +4435,23 @@ app.get('/api/religion001mb', (req, res) => {
  */
 
 app.get('/api/religion001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Religion001mb.findOne({ _id: id }, function (err, religion001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting religion001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Religion001mb.findOne({ _id: id }, function (err, religion001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting religion001mb.',
+				error: err
+			});
+		}
 
-        if (!religion001mb) {
-            return res.status(404).json({
-                message: 'No such religion001mb'
-            });
-        }
+		if (!religion001mb) {
+			return res.status(404).json({
+				message: 'No such religion001mb'
+			});
+		}
 
-        return res.json(religion001mb);
-    });
+		return res.json(religion001mb);
+	});
 });
 
 /**
@@ -4479,22 +4477,22 @@ app.get('/api/religion001mb/:id', (req, res) => {
  */
 
 app.post('/api/religion001mb/religion', (req, res) => {
-    const religion001mb = new Religion001mb();
-    religion001mb.religionname = req.body.religionname;
-    religion001mb.religiondesc = req.body.religiondesc;
-    religion001mb.status = req.body.status;
-    religion001mb.inserteduser = req.body.inserteduser;
-    religion001mb.inserteddatetime = req.body.inserteddatetime;
-    religion001mb.updateduser = req.body.updateduser;
-    religion001mb.updateddatetime = req.body.updateddatetime;
+	const religion001mb = new Religion001mb();
+	religion001mb.religionname = req.body.religionname;
+	religion001mb.religiondesc = req.body.religiondesc;
+	religion001mb.status = req.body.status;
+	religion001mb.inserteduser = req.body.inserteduser;
+	religion001mb.inserteddatetime = req.body.inserteddatetime;
+	religion001mb.updateduser = req.body.updateduser;
+	religion001mb.updateddatetime = req.body.updateddatetime;
 
-    religion001mb.save()
-        .then((result) => {
-            return res.json({ message: 'religion created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	religion001mb.save()
+		.then((result) => {
+			return res.json({ message: 'religion created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 /**
  * @swagger
@@ -4530,40 +4528,40 @@ app.post('/api/religion001mb/religion', (req, res) => {
  */
 
 app.put('/api/religion001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Religion001mb.findOne({ _id: id }, function (err, religion001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting religion001mb',
-                error: err
-            });
-        }
+	Religion001mb.findOne({ _id: id }, function (err, religion001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting religion001mb',
+				error: err
+			});
+		}
 
-        if (!religion001mb) {
-            return res.status(404).json({
-                message: 'No such religion001mb'
-            });
-        }
-        religion001mb.religionname = req.body.religionname ? req.body.religionname : religion001mb.religionname;
-        religion001mb.religiondesc = req.body.religiondesc ? req.body.religiondesc : religion001mb.religiondesc;
-        religion001mb.status = req.body.status ? req.body.status : religion001mb.status;
-        religion001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : religion001mb.inserteduser;
-        religion001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : religion001mb.inserteddatetime;
-        religion001mb.updateduser = req.body.updateduser ? req.body.updateduser : religion001mb.updateduser;
-        religion001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : religion001mb.updateddatetime;
+		if (!religion001mb) {
+			return res.status(404).json({
+				message: 'No such religion001mb'
+			});
+		}
+		religion001mb.religionname = req.body.religionname ? req.body.religionname : religion001mb.religionname;
+		religion001mb.religiondesc = req.body.religiondesc ? req.body.religiondesc : religion001mb.religiondesc;
+		religion001mb.status = req.body.status ? req.body.status : religion001mb.status;
+		religion001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : religion001mb.inserteduser;
+		religion001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : religion001mb.inserteddatetime;
+		religion001mb.updateduser = req.body.updateduser ? req.body.updateduser : religion001mb.updateduser;
+		religion001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : religion001mb.updateddatetime;
 
-        religion001mb.save(function (err, religion001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating religion001mb.',
-                    error: err
-                });
-            }
+		religion001mb.save(function (err, religion001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating religion001mb.',
+					error: err
+				});
+			}
 
-            return res.json(religion001mb);
-        });
-    });
+			return res.json(religion001mb);
+		});
+	});
 });
 /**
  * @swagger
@@ -4588,18 +4586,18 @@ app.put('/api/religion001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/religion001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Religion001mb.findByIdAndRemove(id, function (err, religion001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the religion001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Religion001mb.findByIdAndRemove(id, function (err, religion001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the religion001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
+		return res.json({ message: 'Deleted Sucessfully' });
 
-    });
+	});
 });
 
 
@@ -4657,16 +4655,16 @@ app.delete('/api/religion001mb/:id', (req, res) => {
  */
 
 app.get('/api/subcatclassification001mb', (req, res) => {
-    Subcatclassification001mb.find(function (err, subcatclassification001mbs) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subcatclassification001mb.',
-                error: err
-            });
-        }
+	Subcatclassification001mb.find(function (err, subcatclassification001mbs) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subcatclassification001mb.',
+				error: err
+			});
+		}
 
-        return res.json(subcatclassification001mbs);
-    });
+		return res.json(subcatclassification001mbs);
+	});
 });
 
 /**
@@ -4697,23 +4695,23 @@ app.get('/api/subcatclassification001mb', (req, res) => {
  */
 
 app.get('/api/subcatclassification001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Subcatclassification001mb.findOne({ _id: id }, function (err, subcatclassification001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subcatclassification001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subcatclassification001mb.findOne({ _id: id }, function (err, subcatclassification001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subcatclassification001mb.',
+				error: err
+			});
+		}
 
-        if (!subcatclassification001mb) {
-            return res.status(404).json({
-                message: 'No such subcatclassification001mb'
-            });
-        }
+		if (!subcatclassification001mb) {
+			return res.status(404).json({
+				message: 'No such subcatclassification001mb'
+			});
+		}
 
-        return res.json(subcatclassification001mb);
-    });
+		return res.json(subcatclassification001mb);
+	});
 });
 
 /**
@@ -4739,22 +4737,22 @@ app.get('/api/subcatclassification001mb/:id', (req, res) => {
  */
 
 app.post('/api/subcatclassification001mb/subcatclassification', (req, res) => {
-    const subcatclassification001mb = new Subcatclassification001mb();
-    subcatclassification001mb.subcatcode = req.body.subcatcode.id;
-    subcatclassification001mb.catcode = req.body.catcode.id,
-        subcatclassification001mb.classificationname = req.body.classificationname;
-    subcatclassification001mb.status = req.body.status;
-    subcatclassification001mb.inserteduser = req.body.inserteduser;
-    subcatclassification001mb.inserteddatetime = req.body.inserteddatetime;
-    subcatclassification001mb.updateduser = req.body.updateduser;
-    subcatclassification001mb.updateddatetime = req.body.updateddatetime;
-    subcatclassification001mb.save()
-        .then((result) => {
-            return res.json({ message: 'subcatclassification created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	const subcatclassification001mb = new Subcatclassification001mb();
+	subcatclassification001mb.subcatcode = req.body.subcatcode.id;
+	subcatclassification001mb.catcode = req.body.catcode.id,
+		subcatclassification001mb.classificationname = req.body.classificationname;
+	subcatclassification001mb.status = req.body.status;
+	subcatclassification001mb.inserteduser = req.body.inserteduser;
+	subcatclassification001mb.inserteddatetime = req.body.inserteddatetime;
+	subcatclassification001mb.updateduser = req.body.updateduser;
+	subcatclassification001mb.updateddatetime = req.body.updateddatetime;
+	subcatclassification001mb.save()
+		.then((result) => {
+			return res.json({ message: 'subcatclassification created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 /**
  * @swagger
@@ -4790,40 +4788,40 @@ app.post('/api/subcatclassification001mb/subcatclassification', (req, res) => {
  */
 
 app.put('/api/subcatclassification001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Subcatclassification001mb.findOne({ _id: id }, function (err, subcatclassification001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subcatclassification001mb',
-                error: err
-            });
-        }
+	Subcatclassification001mb.findOne({ _id: id }, function (err, subcatclassification001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subcatclassification001mb',
+				error: err
+			});
+		}
 
-        if (!subcatclassification001mb) {
-            return res.status(404).json({
-                message: 'No such subcatclassification001mb'
-            });
-        }
-        subcatclassification001mb.subcatcode = req.body.subcatcode.id ? req.body.subcatcode.id : subcatclassification001mb.subcatcode;
-        subcatclassification001mb.catcode = req.body.catcode.id ? req.body.catcode.id : subcatclassification001mb.catcode;
-        subcatclassification001mb.classificationname = req.body.classificationname ? req.body.classificationname : subcatclassification001mb.classificationname;
-        subcatclassification001mb.status = req.body.status ? req.body.status : subcatclassification001mb.status;
-        subcatclassification001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subcatclassification001mb.inserteduser;
-        subcatclassification001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subcatclassification001mb.inserteddatetime;
-        subcatclassification001mb.updateduser = req.body.updateduser ? req.body.updateduser : subcatclassification001mb.updateduser;
-        subcatclassification001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subcatclassification001mb.updateddatetime;
-        subcatclassification001mb.save(function (err, subcatclassification001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating subcatclassification001mb.',
-                    error: err
-                });
-            }
+		if (!subcatclassification001mb) {
+			return res.status(404).json({
+				message: 'No such subcatclassification001mb'
+			});
+		}
+		subcatclassification001mb.subcatcode = req.body.subcatcode.id ? req.body.subcatcode.id : subcatclassification001mb.subcatcode;
+		subcatclassification001mb.catcode = req.body.catcode.id ? req.body.catcode.id : subcatclassification001mb.catcode;
+		subcatclassification001mb.classificationname = req.body.classificationname ? req.body.classificationname : subcatclassification001mb.classificationname;
+		subcatclassification001mb.status = req.body.status ? req.body.status : subcatclassification001mb.status;
+		subcatclassification001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subcatclassification001mb.inserteduser;
+		subcatclassification001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subcatclassification001mb.inserteddatetime;
+		subcatclassification001mb.updateduser = req.body.updateduser ? req.body.updateduser : subcatclassification001mb.updateduser;
+		subcatclassification001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subcatclassification001mb.updateddatetime;
+		subcatclassification001mb.save(function (err, subcatclassification001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating subcatclassification001mb.',
+					error: err
+				});
+			}
 
-            return res.json(subcatclassification001mb);
-        });
-    });
+			return res.json(subcatclassification001mb);
+		});
+	});
 });
 /**
  * @swagger
@@ -4848,17 +4846,17 @@ app.put('/api/subcatclassification001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/subcatclassification001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Subcatclassification001mb.findByIdAndRemove(id, function (err, subcatclassification001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the subcatclassification001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subcatclassification001mb.findByIdAndRemove(id, function (err, subcatclassification001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the subcatclassification001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 // ********************** subcategory001mb schema method****************//
@@ -4912,16 +4910,16 @@ app.delete('/api/subcatclassification001mb/:id', (req, res) => {
  */
 
 app.get('/api/subcategory001mb', (req, res) => {
-    Subcategory001mb.find(function (err, subcategory001mbs) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subcategory001mb.',
-                error: err
-            });
-        }
+	Subcategory001mb.find(function (err, subcategory001mbs) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subcategory001mb.',
+				error: err
+			});
+		}
 
-        return res.json(subcategory001mbs);
-    });
+		return res.json(subcategory001mbs);
+	});
 });
 
 /**
@@ -4952,23 +4950,23 @@ app.get('/api/subcategory001mb', (req, res) => {
  */
 
 app.get('/api/subcategory001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Subcategory001mb.findOne({ _id: id }, function (err, subcategory001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subcategory001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subcategory001mb.findOne({ _id: id }, function (err, subcategory001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subcategory001mb.',
+				error: err
+			});
+		}
 
-        if (!subcategory001mb) {
-            return res.status(404).json({
-                message: 'No such subcategory001mb'
-            });
-        }
+		if (!subcategory001mb) {
+			return res.status(404).json({
+				message: 'No such subcategory001mb'
+			});
+		}
 
-        return res.json(subcategory001mb);
-    });
+		return res.json(subcategory001mb);
+	});
 });
 
 /**
@@ -4994,22 +4992,22 @@ app.get('/api/subcategory001mb/:id', (req, res) => {
  */
 
 app.post('/api/subcategory001mb/subcategory', (req, res) => {
-    const subcategory001mb = new Subcategory001mb();
-    subcategory001mb.catcode = req.body.catcode.id;
-    subcategory001mb.subcatname = req.body.subcatname;
-    subcategory001mb.subcatstatus = req.body.subcatstatus;
-    subcategory001mb.status = req.body.status;
-    subcategory001mb.inserteduser = req.body.inserteduser;
-    subcategory001mb.inserteddatetime = req.body.inserteddatetime;
-    subcategory001mb.updateduser = req.body.updateduser;
-    subcategory001mb.updateddatetime = req.body.updateddatetime;
-    subcategory001mb.save()
-        .then((result) => {
-            return res.json({ message: 'subcategory001mb created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	const subcategory001mb = new Subcategory001mb();
+	subcategory001mb.catcode = req.body.catcode.id;
+	subcategory001mb.subcatname = req.body.subcatname;
+	subcategory001mb.subcatstatus = req.body.subcatstatus;
+	subcategory001mb.status = req.body.status;
+	subcategory001mb.inserteduser = req.body.inserteduser;
+	subcategory001mb.inserteddatetime = req.body.inserteddatetime;
+	subcategory001mb.updateduser = req.body.updateduser;
+	subcategory001mb.updateddatetime = req.body.updateddatetime;
+	subcategory001mb.save()
+		.then((result) => {
+			return res.json({ message: 'subcategory001mb created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 /**
  * @swagger
@@ -5045,40 +5043,40 @@ app.post('/api/subcategory001mb/subcategory', (req, res) => {
  */
 
 app.put('/api/subcategory001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Subcategory001mb.findOne({ _id: id }, function (err, subcategory001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subcategory001mb',
-                error: err
-            });
-        }
+	Subcategory001mb.findOne({ _id: id }, function (err, subcategory001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subcategory001mb',
+				error: err
+			});
+		}
 
-        if (!subcategory001mb) {
-            return res.status(404).json({
-                message: 'No such subcategory001mb'
-            });
-        }
-        subcategory001mb.catcode = req.body.catcode.id ? req.body.catcode.id : subcategory001mb.catcode;
-        subcategory001mb.subcatname = req.body.subcatname ? req.body.subcatname : subcategory001mb.subcatname;
-        subcategory001mb.subcatstatus = req.body.subcatstatus ? req.body.subcatstatus : subcategory001mb.subcatstatus;
-        subcategory001mb.status = req.body.status ? req.body.status : subcategory001mb.status;
-        subcategory001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subcategory001mb.inserteduser;
-        subcategory001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subcategory001mb.inserteddatetime;
-        subcategory001mb.updateduser = req.body.updateduser ? req.body.updateduser : subcategory001mb.updateduser;
-        subcategory001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subcategory001mb.updateddatetime;
-        subcategory001mb.save(function (err, subcategory001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating subcategory001mb.',
-                    error: err
-                });
-            }
+		if (!subcategory001mb) {
+			return res.status(404).json({
+				message: 'No such subcategory001mb'
+			});
+		}
+		subcategory001mb.catcode = req.body.catcode.id ? req.body.catcode.id : subcategory001mb.catcode;
+		subcategory001mb.subcatname = req.body.subcatname ? req.body.subcatname : subcategory001mb.subcatname;
+		subcategory001mb.subcatstatus = req.body.subcatstatus ? req.body.subcatstatus : subcategory001mb.subcatstatus;
+		subcategory001mb.status = req.body.status ? req.body.status : subcategory001mb.status;
+		subcategory001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subcategory001mb.inserteduser;
+		subcategory001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subcategory001mb.inserteddatetime;
+		subcategory001mb.updateduser = req.body.updateduser ? req.body.updateduser : subcategory001mb.updateduser;
+		subcategory001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subcategory001mb.updateddatetime;
+		subcategory001mb.save(function (err, subcategory001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating subcategory001mb.',
+					error: err
+				});
+			}
 
-            return res.json(subcategory001mb);
-        });
-    });
+			return res.json(subcategory001mb);
+		});
+	});
 });
 /**
  * @swagger
@@ -5103,17 +5101,17 @@ app.put('/api/subcategory001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/subcategory001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Subcategory001mb.findByIdAndRemove(id, function (err, subcategory001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the subcategory001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subcategory001mb.findByIdAndRemove(id, function (err, subcategory001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the subcategory001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 // ********************** subscribercontentauth001wb schema method****************//
@@ -5164,16 +5162,16 @@ app.delete('/api/subcategory001mb/:id', (req, res) => {
  */
 
 app.get('/api/subscribercontentauth001wb', (req, res) => {
-    Subscribercontentauth001wb.find(function (err, subscribercontentauth001wbs) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscribercontentauth001wb.',
-                error: err
-            });
-        }
+	Subscribercontentauth001wb.find(function (err, subscribercontentauth001wbs) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscribercontentauth001wb.',
+				error: err
+			});
+		}
 
-        return res.json(subscribercontentauth001wbs);
-    });
+		return res.json(subscribercontentauth001wbs);
+	});
 });
 
 /**
@@ -5204,23 +5202,23 @@ app.get('/api/subscribercontentauth001wb', (req, res) => {
  */
 
 app.get('/api/subscribercontentauth001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Subscribercontentauth001wb.findOne({ _id: id }, function (err, subscribercontentauth001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscribercontentauth001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subscribercontentauth001wb.findOne({ _id: id }, function (err, subscribercontentauth001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscribercontentauth001wb.',
+				error: err
+			});
+		}
 
-        if (!subscribercontentauth001wb) {
-            return res.status(404).json({
-                message: 'No such subscribercontentauth001wb'
-            });
-        }
+		if (!subscribercontentauth001wb) {
+			return res.status(404).json({
+				message: 'No such subscribercontentauth001wb'
+			});
+		}
 
-        return res.json(subscribercontentauth001wb);
-    });
+		return res.json(subscribercontentauth001wb);
+	});
 });
 
 /**
@@ -5246,22 +5244,22 @@ app.get('/api/subscribercontentauth001wb/:id', (req, res) => {
  */
 
 app.post('/api/subscribercontentauth001wb/subscribercontent', (req, res) => {
-    const subscribercontentauth001wb = new Subscribercontentauth001wb();
-    subscribercontentauth001wb.subscsubpstatus = req.body.subscsubpstatus;
-    subscribercontentauth001wb.subscsubpstartdate = req.body.subscsubpstartdate;
-    subscribercontentauth001wb.subscsubpenddate = req.body.subscsubpenddate;
-    subscribercontentauth001wb.inserteduser = req.body.inserteduser;
-    subscribercontentauth001wb.inserteddatetime = req.body.inserteddatetime;
-    subscribercontentauth001wb.updateduser = req.body.updateduser;
-    subscribercontentauth001wb.status = req.body.status;
-    subscribercontentauth001wb.updateddatetime = req.body.updateddatetime;
-    subscribercontentauth001wb.save()
-        .then((result) => {
-            return res.json({ message: 'subscribercontentauth created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	const subscribercontentauth001wb = new Subscribercontentauth001wb();
+	subscribercontentauth001wb.subscsubpstatus = req.body.subscsubpstatus;
+	subscribercontentauth001wb.subscsubpstartdate = req.body.subscsubpstartdate;
+	subscribercontentauth001wb.subscsubpenddate = req.body.subscsubpenddate;
+	subscribercontentauth001wb.inserteduser = req.body.inserteduser;
+	subscribercontentauth001wb.inserteddatetime = req.body.inserteddatetime;
+	subscribercontentauth001wb.updateduser = req.body.updateduser;
+	subscribercontentauth001wb.status = req.body.status;
+	subscribercontentauth001wb.updateddatetime = req.body.updateddatetime;
+	subscribercontentauth001wb.save()
+		.then((result) => {
+			return res.json({ message: 'subscribercontentauth created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 /**
  * @swagger
@@ -5297,40 +5295,40 @@ app.post('/api/subscribercontentauth001wb/subscribercontent', (req, res) => {
  */
 
 app.put('/api/subscribercontentauth001wb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Subscribercontentauth001wb.findOne({ _id: id }, function (err, subscribercontentauth001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscribercontentauth001wb',
-                error: err
-            });
-        }
+	Subscribercontentauth001wb.findOne({ _id: id }, function (err, subscribercontentauth001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscribercontentauth001wb',
+				error: err
+			});
+		}
 
-        if (!subscribercontentauth001wb) {
-            return res.status(404).json({
-                message: 'No such subscribercontentauth001wb'
-            });
-        }
-        subscribercontentauth001wb.subscsubpstatus = req.body.subscsubpstatus ? req.body.subscsubpstatus : subscribercontentauth001wb.subscsubpstatus;
-        subscribercontentauth001wb.subscsubpstartdate = req.body.subscsubpstartdate ? req.body.subscsubpstartdate : subscribercontentauth001wb.subscsubpstartdate;
-        subscribercontentauth001wb.subscsubpenddate = req.body.subscsubpenddate ? req.body.subscsubpenddate : subscribercontentauth001wb.subscsupbenddate;
-        subscribercontentauth001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscribercontentauth001wb.inserteduser;
-        subscribercontentauth001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscribercontentauth001wb.inserteddatetime;
-        subscribercontentauth001wb.updateduser = req.body.updateduser ? req.body.updateduser : subscribercontentauth001wb.updateduser;
-        subscribercontentauth001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscribercontentauth001wb.updateddatetime;
-        subscribercontentauth001wb.status = req.body.status ? req.body.status : subscribercontentauth001wb.status;
-        subscribercontentauth001wb.save(function (err, subscribercontentauth001wb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating subscribercontentauth001wb.',
-                    error: err
-                });
-            }
+		if (!subscribercontentauth001wb) {
+			return res.status(404).json({
+				message: 'No such subscribercontentauth001wb'
+			});
+		}
+		subscribercontentauth001wb.subscsubpstatus = req.body.subscsubpstatus ? req.body.subscsubpstatus : subscribercontentauth001wb.subscsubpstatus;
+		subscribercontentauth001wb.subscsubpstartdate = req.body.subscsubpstartdate ? req.body.subscsubpstartdate : subscribercontentauth001wb.subscsubpstartdate;
+		subscribercontentauth001wb.subscsubpenddate = req.body.subscsubpenddate ? req.body.subscsubpenddate : subscribercontentauth001wb.subscsupbenddate;
+		subscribercontentauth001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscribercontentauth001wb.inserteduser;
+		subscribercontentauth001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscribercontentauth001wb.inserteddatetime;
+		subscribercontentauth001wb.updateduser = req.body.updateduser ? req.body.updateduser : subscribercontentauth001wb.updateduser;
+		subscribercontentauth001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscribercontentauth001wb.updateddatetime;
+		subscribercontentauth001wb.status = req.body.status ? req.body.status : subscribercontentauth001wb.status;
+		subscribercontentauth001wb.save(function (err, subscribercontentauth001wb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating subscribercontentauth001wb.',
+					error: err
+				});
+			}
 
-            return res.json(subscribercontentauth001wb);
-        });
-    });
+			return res.json(subscribercontentauth001wb);
+		});
+	});
 });
 /**
  * @swagger
@@ -5355,17 +5353,17 @@ app.put('/api/subscribercontentauth001wb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/subscribercontentauth001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Subscribercontentauth001wb.findByIdAndRemove(id, function (err, subscribercontentauth001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the subscribercontentauth001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subscribercontentauth001wb.findByIdAndRemove(id, function (err, subscribercontentauth001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the subscribercontentauth001wb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 // ********************** subscriberdetails001wb schema method****************//
@@ -5445,16 +5443,16 @@ app.delete('/api/subscribercontentauth001wb/:id', (req, res) => {
  */
 
 app.get('/api/subscriberdetails001wb', (req, res) => {
-    Subscriberdetails001wb.find(function (err, subscriberdetails001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriberdetails001wb.',
-                error: err
-            });
-        }
+	Subscriberdetails001wb.find(function (err, subscriberdetails001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriberdetails001wb.',
+				error: err
+			});
+		}
 
-        return res.json(subscriberdetails001wb);
-    });
+		return res.json(subscriberdetails001wb);
+	});
 });
 /**
  * @swagger
@@ -5477,24 +5475,24 @@ app.get('/api/subscriberdetails001wb', (req, res) => {
  */
 
 app.get('/api/subscriberdetails001wb/verify', async (req, res) => {
-    const token = req.query.token;
-    if (!token) {
-        return res.status(403).send("A token is required for authentication");
-    }
-    try {
-        const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-        req.verifydecode = decoded;
-        const person = await Person001mb.findOne({ email: decoded.email, rolename: decoded.rolename, });
-        if (person.verified) {
-            return res.status(401).send({ message: " Account Verified Please Login" });
-        } else {
-            person.verified = true;
-            person.save();
-            return res.status(200).send({ message: "Account Verified" });
-        }
-    } catch (err) {
-        return res.status(401).send("Invalid Token");
-    }
+	const token = req.query.token;
+	if (!token) {
+		return res.status(403).send("A token is required for authentication");
+	}
+	try {
+		const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+		req.verifydecode = decoded;
+		const person = await Person001mb.findOne({ email: decoded.email, rolename: decoded.rolename, });
+		if (person.verified) {
+			return res.status(401).send({ message: " Account Verified Please Login" });
+		} else {
+			person.verified = true;
+			person.save();
+			return res.status(200).send({ message: "Account Verified" });
+		}
+	} catch (err) {
+		return res.status(401).send("Invalid Token");
+	}
 });
 
 /**
@@ -5525,23 +5523,23 @@ app.get('/api/subscriberdetails001wb/verify', async (req, res) => {
  */
 
 app.get('/api/subscriberdetails001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Subscriberdetails001wb.findOne({ _id: id }, function (err, subscriberdetails001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriberdetails001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subscriberdetails001wb.findOne({ _id: id }, function (err, subscriberdetails001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriberdetails001wb.',
+				error: err
+			});
+		}
 
-        if (!subscriberdetails001wb) {
-            return res.status(404).json({
-                message: 'No such subscriberdetails001wb'
-            });
-        }
+		if (!subscriberdetails001wb) {
+			return res.status(404).json({
+				message: 'No such subscriberdetails001wb'
+			});
+		}
 
-        return res.json(subscriberdetails001wb);
-    });
+		return res.json(subscriberdetails001wb);
+	});
 });
 
 /**
@@ -5567,114 +5565,114 @@ app.get('/api/subscriberdetails001wb/:id', (req, res) => {
  */
 
 app.post('/api/subscriberdetails001wb/subscriberdetails', async (req, res) => {
-    const person001mb = new Person001mb();
-    person001mb.subcatcode = req.body.subcatcode.id;
-    person001mb.professionalid = req.body.professionalid.id;
-    person001mb.categoryid = req.body.categoryid.id;
-    person001mb.languageid = req.body.languageid.id;
-    person001mb.personalid = req.body.personalid.id;
-    person001mb.religionid = req.body.religionid.id;
-    person001mb.classificationid = req.body.classificationid.id;
-    person001mb.subscsubspid = req.body.subscsubspid.id;
-    person001mb.regionalid = req.body.regionalid.id;
-    person001mb.companycode = req.body.companycode.id;
-    person001mb.countryid = req.body.countryid.id;
-    person001mb.cityid = req.body.cityid.id;
-    person001mb.stateid = req.body.stateid.id;
-    person001mb.roleid = req.body.roleid.id;
-    person001mb.firstname = req.body.firstname;
-    person001mb.lasttname = req.body.lasttname;
-    person001mb.zipcode = req.body.zipcode;
-    person001mb.dob = req.body.dob;
-    person001mb.confirmemail = req.body.confirmemail;
-    person001mb.email = req.body.email;
-    person001mb.age = req.body.age;
-    person001mb.verified = false;
-    person001mb.sex = req.body.sex;
-    person001mb.address = req.body.address;
-    person001mb.phoneno = req.body.phoneno;
-    person001mb.landline = req.body.landline;
-    person001mb.inserteduser = req.body.inserteduser;
-    person001mb.inserteddatetime = req.body.inserteddatetime;
-    person001mb.updateduser = req.body.updateduser;
-    person001mb.updateddatetime = req.body.updateddatetime;
-    person001mb.status = req.body.status;
-    if (!(person001mb.email && person001mb.firstname && person001mb.roleid)) {
-        return res.status(402).json("Enter a Required Field");
-    }
-    const oldUser = await Person001mb.findOne({ email: person001mb.email, firstname: person001mb.firstname, roleid: person001mb.roleid });
-    if (oldUser) {
-        return res.status(409).send("User Already Exist");
-    }
-    const token = jwt.sign({ email: person001mb.email, roleid: person001mb.roleid }, process.env.TOKEN_KEY,
-        {
-            expiresIn: "6h",
-        }
-    );
-    person001mb.token = token;
-    let person = await person001mb.save();
+	const person001mb = new Person001mb();
+	person001mb.subcatcode = req.body.subcatcode.id;
+	person001mb.professionalid = req.body.professionalid.id;
+	person001mb.categoryid = req.body.categoryid.id;
+	person001mb.languageid = req.body.languageid.id;
+	person001mb.personalid = req.body.personalid.id;
+	person001mb.religionid = req.body.religionid.id;
+	person001mb.classificationid = req.body.classificationid.id;
+	person001mb.subscsubspid = req.body.subscsubspid.id;
+	person001mb.regionalid = req.body.regionalid.id;
+	person001mb.companycode = req.body.companycode.id;
+	person001mb.countryid = req.body.countryid.id;
+	person001mb.cityid = req.body.cityid.id;
+	person001mb.stateid = req.body.stateid.id;
+	person001mb.roleid = req.body.roleid.id;
+	person001mb.firstname = req.body.firstname;
+	person001mb.lasttname = req.body.lasttname;
+	person001mb.zipcode = req.body.zipcode;
+	person001mb.dob = req.body.dob;
+	person001mb.confirmemail = req.body.confirmemail;
+	person001mb.email = req.body.email;
+	person001mb.age = req.body.age;
+	person001mb.verified = false;
+	person001mb.sex = req.body.sex;
+	person001mb.address = req.body.address;
+	person001mb.phoneno = req.body.phoneno;
+	person001mb.landline = req.body.landline;
+	person001mb.inserteduser = req.body.inserteduser;
+	person001mb.inserteddatetime = req.body.inserteddatetime;
+	person001mb.updateduser = req.body.updateduser;
+	person001mb.updateddatetime = req.body.updateddatetime;
+	person001mb.status = req.body.status;
+	if (!(person001mb.email && person001mb.firstname && person001mb.roleid)) {
+		return res.status(402).json("Enter a Required Field");
+	}
+	const oldUser = await Person001mb.findOne({ email: person001mb.email, firstname: person001mb.firstname, roleid: person001mb.roleid });
+	if (oldUser) {
+		return res.status(409).send("User Already Exist");
+	}
+	const token = jwt.sign({ email: person001mb.email, roleid: person001mb.roleid }, process.env.TOKEN_KEY,
+		{
+			expiresIn: "6h",
+		}
+	);
+	person001mb.token = token;
+	let person = await person001mb.save();
 
-    const login001mb = new Login001mb()
-    login001mb.username = req.body.username;
-    login001mb.password = bcrypt.hashSync(req.body.password, 10);
-    login001mb.roleid = req.body.roleid.id;
-    login001mb.inserteduser = req.body.inserteduser;
-    login001mb.inserteddatetime = req.body.inserteddatetime;
-    login001mb.updateduser = req.body.updateduser;
-    login001mb.status = req.body.status;
-    login001mb.personid = person._id;
-    await login001mb.save()
+	const login001mb = new Login001mb()
+	login001mb.username = req.body.username;
+	login001mb.password = bcrypt.hashSync(req.body.password, 10);
+	login001mb.roleid = req.body.roleid.id;
+	login001mb.inserteduser = req.body.inserteduser;
+	login001mb.inserteddatetime = req.body.inserteddatetime;
+	login001mb.updateduser = req.body.updateduser;
+	login001mb.status = req.body.status;
+	login001mb.personid = person._id;
+	await login001mb.save()
 
-    const subscriberdetails001wb = new Subscriberdetails001wb();
-    subscriberdetails001wb.personid = person._id;
-    subscriberdetails001wb.contentid = req.body.contentid.id;
-    subscriberdetails001wb.subpid = req.body.subpid.id;
-    subscriberdetails001wb.subscdesc = req.body.subscdesc;
-    subscriberdetails001wb.aboutme = req.body.aboutme;
-    subscriberdetails001wb.subscstatus = req.body.subscstatus;
-    subscriberdetails001wb.horoscope = req.body.horoscope;
-    subscriberdetails001wb.subscapproval = req.body.subscapproval;
-    subscriberdetails001wb.approvedby = req.body.approvedby;
-    subscriberdetails001wb.approvedon = req.body.approvedon;
-    subscriberdetails001wb.inserteduser = req.body.inserteduser;
-    subscriberdetails001wb.inserteddatetime = req.body.inserteddatetime;
-    subscriberdetails001wb.updateduser = req.body.updateduser;
-    subscriberdetails001wb.status = req.body.status;
-    await subscriberdetails001wb.save()
+	const subscriberdetails001wb = new Subscriberdetails001wb();
+	subscriberdetails001wb.personid = person._id;
+	subscriberdetails001wb.contentid = req.body.contentid.id;
+	subscriberdetails001wb.subpid = req.body.subpid.id;
+	subscriberdetails001wb.subscdesc = req.body.subscdesc;
+	subscriberdetails001wb.aboutme = req.body.aboutme;
+	subscriberdetails001wb.subscstatus = req.body.subscstatus;
+	subscriberdetails001wb.horoscope = req.body.horoscope;
+	subscriberdetails001wb.subscapproval = req.body.subscapproval;
+	subscriberdetails001wb.approvedby = req.body.approvedby;
+	subscriberdetails001wb.approvedon = req.body.approvedon;
+	subscriberdetails001wb.inserteduser = req.body.inserteduser;
+	subscriberdetails001wb.inserteddatetime = req.body.inserteddatetime;
+	subscriberdetails001wb.updateduser = req.body.updateduser;
+	subscriberdetails001wb.status = req.body.status;
+	await subscriberdetails001wb.save()
 
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'siriusmatrimoney@gmail.com',
-            pass: 'Welcome!23'
-        }
-    });
-    const handlebarOptions = {
-        viewEngine: {
-            partialsDir: path.resolve('./app/templates'),
-            defaultLayout: false,
-        },
-        viewPath: path.resolve('./app/templates'),
-        extName: ".handlebars"
-    };
-    transporter.use('compile', hbs(handlebarOptions))
-    const mailOptions = {
-        from: 'siriusmatrimoney@gmail.com',
-        to: person001mb.email,
-        subject: 'Sirius Matrimony Confirmation',
-        template: 'mail',
-        context: {
-            name: "Sirius Matrimony",
-            url: `http://localhost:8081/api/subscriberdetails001wb/verify?token=${token}`
-        }
-    };
-    transporter.sendMail(mailOptions, function (err, info) {
-        if (err) {
-            return res.status(401).json({ message: 'email not created!' });
-        } else {
-            return res.json({ message: 'email created!' });
-        }
-    })
+	var transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: 'siriusmatrimoney@gmail.com',
+			pass: 'Welcome!23'
+		}
+	});
+	const handlebarOptions = {
+		viewEngine: {
+			partialsDir: path.resolve('./app/templates'),
+			defaultLayout: false,
+		},
+		viewPath: path.resolve('./app/templates'),
+		extName: ".handlebars"
+	};
+	transporter.use('compile', hbs(handlebarOptions))
+	const mailOptions = {
+		from: 'siriusmatrimoney@gmail.com',
+		to: person001mb.email,
+		subject: 'Sirius Matrimony Confirmation',
+		template: 'mail',
+		context: {
+			name: "Sirius Matrimony",
+			url: `http://localhost:8081/api/subscriberdetails001wb/verify?token=${token}`
+		}
+	};
+	transporter.sendMail(mailOptions, function (err, info) {
+		if (err) {
+			return res.status(401).json({ message: 'email not created!' });
+		} else {
+			return res.json({ message: 'email created!' });
+		}
+	})
 })
 /**
  * @swagger
@@ -5722,82 +5720,82 @@ app.post('/api/subscriberdetails001wb/subscriberdetails', async (req, res) => {
  */
 
 app.put('/api/subscriberdetails001wb/:personid/:loginid/:subid', async (req, res) => {
-    var personid = req.params.personid;
-    var loginid = req.params.loginid;
-    var subid = req.params.subid;
-    const person001mb = await Person001mb.findOne({ _id: personid });
-    if (person001mb) {
-        person001mb.personalid = req.body.personalid.id ? req.body.personalid.id : person001mb.personalid;
-        person001mb.subcatcode = req.body.subcatcode.id ? req.body.subcatcode.id : person001mb.subcatcode;
-        person001mb.professionalid = req.body.professionalid.id ? req.body.professionalid.id : person001mb.professionalid;
-        person001mb.categoryid = req.body.categoryid.id ? req.body.categoryid.id : person001mb.categoryid;
-        person001mb.languageid = req.body.languageid.id ? req.body.languageid.id : person001mb.languageid;
-        person001mb.religionid = req.body.religionid.id ? req.body.religionid.id : person001mb.religionid;
-        person001mb.classificationid = req.body.classificationid.id ? req.body.classificationid.id : person001mb.classificationid;
-        person001mb.subscsubspid = req.body.subscsubspid.id ? req.body.subscsubspid.id : person001mb.subscsubspid;
-        person001mb.regionalid = req.body.regionalid.id ? req.body.regionalid.id : person001mb.regionalid;
-        person001mb.companycode = req.body.companycode.id ? req.body.companycode.id : person001mb.companycode;
-        person001mb.email = req.body.email ? req.body.email : person001mb.email;
-        person001mb.contentid = req.body.contentid.id ? req.body.contentid.id : person001mb.contentid;
-        person001mb.cityid = req.body.cityid.id ? req.body.cityid.id : person001mb.cityid;
-        person001mb.stateid = req.body.stateid.id ? req.body.stateid.id : person001mb.stateid;
-        person001mb.roleid = req.body.roleid.id ? req.body.roleid.id : person001mb.roleid;
-        person001mb.age = req.body.age ? req.body.age : person001mb.age;
-        person001mb.sex = req.body.sex ? req.body.sex : person001mb.sex;
-        person001mb.countryid = req.body.countryid.id ? req.body.countryid.id : person001mb.countryid;
-        person001mb.address = req.body.address ? req.body.address : person001mb.address;
-        person001mb.phoneno = req.body.phoneno ? req.body.phoneno : person001mb.phoneno;
-        person001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : person001mb.inserteduser;
-        person001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : person001mb.inserteddatetime;
-        person001mb.updateduser = req.body.updateduser ? req.body.updateduser : person001mb.updateduser;
-        person001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : person001mb.updateddatetime;
-        person001mb.firstname = req.body.firstname ? req.body.firstname : person001mb.firstname;
-        person001mb.lasttname = req.body.lasttname ? req.body.lasttname : person001mb.lasttname;
-        person001mb.zipcode = req.body.zipcode ? req.body.zipcode : person001mb.zipcode;
-        person001mb.dob = req.body.dob ? req.body.dob : person001mb.dob;
-        person001mb.confirmemail = req.body.confirmemail ? req.body.confirmemail : person001mb.confirmemail;
-        person001mb.landline = req.body.landline ? req.body.landline : person001mb.landline;
-        person001mb.status = req.body.status ? req.body.status : person001mb.status;
-        let person = person001mb.save();
+	var personid = req.params.personid;
+	var loginid = req.params.loginid;
+	var subid = req.params.subid;
+	const person001mb = await Person001mb.findOne({ _id: personid });
+	if (person001mb) {
+		person001mb.personalid = req.body.personalid.id ? req.body.personalid.id : person001mb.personalid;
+		person001mb.subcatcode = req.body.subcatcode.id ? req.body.subcatcode.id : person001mb.subcatcode;
+		person001mb.professionalid = req.body.professionalid.id ? req.body.professionalid.id : person001mb.professionalid;
+		person001mb.categoryid = req.body.categoryid.id ? req.body.categoryid.id : person001mb.categoryid;
+		person001mb.languageid = req.body.languageid.id ? req.body.languageid.id : person001mb.languageid;
+		person001mb.religionid = req.body.religionid.id ? req.body.religionid.id : person001mb.religionid;
+		person001mb.classificationid = req.body.classificationid.id ? req.body.classificationid.id : person001mb.classificationid;
+		person001mb.subscsubspid = req.body.subscsubspid.id ? req.body.subscsubspid.id : person001mb.subscsubspid;
+		person001mb.regionalid = req.body.regionalid.id ? req.body.regionalid.id : person001mb.regionalid;
+		person001mb.companycode = req.body.companycode.id ? req.body.companycode.id : person001mb.companycode;
+		person001mb.email = req.body.email ? req.body.email : person001mb.email;
+		person001mb.contentid = req.body.contentid.id ? req.body.contentid.id : person001mb.contentid;
+		person001mb.cityid = req.body.cityid.id ? req.body.cityid.id : person001mb.cityid;
+		person001mb.stateid = req.body.stateid.id ? req.body.stateid.id : person001mb.stateid;
+		person001mb.roleid = req.body.roleid.id ? req.body.roleid.id : person001mb.roleid;
+		person001mb.age = req.body.age ? req.body.age : person001mb.age;
+		person001mb.sex = req.body.sex ? req.body.sex : person001mb.sex;
+		person001mb.countryid = req.body.countryid.id ? req.body.countryid.id : person001mb.countryid;
+		person001mb.address = req.body.address ? req.body.address : person001mb.address;
+		person001mb.phoneno = req.body.phoneno ? req.body.phoneno : person001mb.phoneno;
+		person001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : person001mb.inserteduser;
+		person001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : person001mb.inserteddatetime;
+		person001mb.updateduser = req.body.updateduser ? req.body.updateduser : person001mb.updateduser;
+		person001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : person001mb.updateddatetime;
+		person001mb.firstname = req.body.firstname ? req.body.firstname : person001mb.firstname;
+		person001mb.lasttname = req.body.lasttname ? req.body.lasttname : person001mb.lasttname;
+		person001mb.zipcode = req.body.zipcode ? req.body.zipcode : person001mb.zipcode;
+		person001mb.dob = req.body.dob ? req.body.dob : person001mb.dob;
+		person001mb.confirmemail = req.body.confirmemail ? req.body.confirmemail : person001mb.confirmemail;
+		person001mb.landline = req.body.landline ? req.body.landline : person001mb.landline;
+		person001mb.status = req.body.status ? req.body.status : person001mb.status;
+		let person = person001mb.save();
 
-        const login001mb = await Login001mb.findOne({ _id: loginid });
-        login001mb.personid = person._id ? person._id : login001mb.personid;
-        login001mb.username = req.body.username ? req.body.username : login001mb.username;
-        login001mb.password = req.body.password ? bcrypt.hashSync(req.body.password, 10) : login001mb.password;
-        login001mb.roleid = req.body.roleid.id ? req.body.roleid.id : login001mb.roleid;
-        login001mb.status = req.body.status ? req.body.status : login001mb.status
-        login001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : login001mb.inserteduser;
-        login001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : login001mb.inserteddatetime;
-        login001mb.updateduser = req.body.updateduser ? req.body.updateduser : login001mb.updateduser;
-        login001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : login001mb.updateddatetime;
-        login001mb.save();
+		const login001mb = await Login001mb.findOne({ _id: loginid });
+		login001mb.personid = person._id ? person._id : login001mb.personid;
+		login001mb.username = req.body.username ? req.body.username : login001mb.username;
+		login001mb.password = req.body.password ? bcrypt.hashSync(req.body.password, 10) : login001mb.password;
+		login001mb.roleid = req.body.roleid.id ? req.body.roleid.id : login001mb.roleid;
+		login001mb.status = req.body.status ? req.body.status : login001mb.status
+		login001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : login001mb.inserteduser;
+		login001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : login001mb.inserteddatetime;
+		login001mb.updateduser = req.body.updateduser ? req.body.updateduser : login001mb.updateduser;
+		login001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : login001mb.updateddatetime;
+		login001mb.save();
 
-        const subscriberdetails001wb = await Subscriberdetails001wb.findOne({ _id: subid });
-        subscriberdetails001wb.subpid = req.body.subpid.id ? req.body.subpid.id : subscriberdetails001wb.subpid;
-        subscriberdetails001wb.horoscope = req.body.horoscope ? req.body.horoscope : subscriberdetails001wb.horoscope;
-        subscriberdetails001wb.contentid = req.body.contentid.id ? req.body.contentid.id : subscriberdetails001wb.contentid;
-        subscriberdetails001wb.personid = person._id ? person._id : subscriberdetails001wb.personid;
-        subscriberdetails001wb.subscdesc = req.body.subscdesc ? req.body.subscdesc : subscriberdetails001wb.subscdesc;
-        subscriberdetails001wb.aboutme = req.body.aboutme ? req.body.aboutme : subscriberdetails001wb.aboutme;
-        subscriberdetails001wb.status = req.body.status ? req.body.status : subscriberdetails001wb.status
-        subscriberdetails001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscriberdetails001wb.inserteduser;
-        subscriberdetails001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscriberdetails001wb.inserteddatetime;
-        subscriberdetails001wb.updateduser = req.body.updateduser ? req.body.updateduser : subscriberdetails001wb.updateduser;
-        subscriberdetails001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscriberdetails001wb.updateddatetime;
-        subscriberdetails001wb.subscapproval = req.body.subscapproval;
-        subscriberdetails001wb.approvedby = req.body.approvedby ? req.body.approvedby : subscriberdetails001wb.approvedby;
-        subscriberdetails001wb.approvedon = req.body.approvedon ? req.body.approvedon : subscriberdetails001wb.approvedon;
-        subscriberdetails001wb.save(function (err, subscriberdetails001wb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating subscriberdetails001wb.',
-                    error: err
-                });
-            }
+		const subscriberdetails001wb = await Subscriberdetails001wb.findOne({ _id: subid });
+		subscriberdetails001wb.subpid = req.body.subpid.id ? req.body.subpid.id : subscriberdetails001wb.subpid;
+		subscriberdetails001wb.horoscope = req.body.horoscope ? req.body.horoscope : subscriberdetails001wb.horoscope;
+		subscriberdetails001wb.contentid = req.body.contentid.id ? req.body.contentid.id : subscriberdetails001wb.contentid;
+		subscriberdetails001wb.personid = person._id ? person._id : subscriberdetails001wb.personid;
+		subscriberdetails001wb.subscdesc = req.body.subscdesc ? req.body.subscdesc : subscriberdetails001wb.subscdesc;
+		subscriberdetails001wb.aboutme = req.body.aboutme ? req.body.aboutme : subscriberdetails001wb.aboutme;
+		subscriberdetails001wb.status = req.body.status ? req.body.status : subscriberdetails001wb.status
+		subscriberdetails001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscriberdetails001wb.inserteduser;
+		subscriberdetails001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscriberdetails001wb.inserteddatetime;
+		subscriberdetails001wb.updateduser = req.body.updateduser ? req.body.updateduser : subscriberdetails001wb.updateduser;
+		subscriberdetails001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscriberdetails001wb.updateddatetime;
+		subscriberdetails001wb.subscapproval = req.body.subscapproval;
+		subscriberdetails001wb.approvedby = req.body.approvedby ? req.body.approvedby : subscriberdetails001wb.approvedby;
+		subscriberdetails001wb.approvedon = req.body.approvedon ? req.body.approvedon : subscriberdetails001wb.approvedon;
+		subscriberdetails001wb.save(function (err, subscriberdetails001wb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating subscriberdetails001wb.',
+					error: err
+				});
+			}
 
-            return res.json('subscriberdetails001wb updated');
-        });
-    }
+			return res.json('subscriberdetails001wb updated');
+		});
+	}
 });
 /**
  * @swagger
@@ -5834,20 +5832,20 @@ app.put('/api/subscriberdetails001wb/:personid/:loginid/:subid', async (req, res
  *         description: failed
  */
 app.delete('/api/subscriberdetails001wb/:personid/:loginid/:subid', async (req, res) => {
-    var subid = req.params.subid;
-    var loginid = req.params.loginid;
-    var personid = req.params.personid;
-    if (subid && loginid && personid) {
-        await Person001mb.findByIdAndRemove({ _id: personid });
-        await Login001mb.findByIdAndRemove({ _id: loginid });
-        await Subscriberdetails001wb.findByIdAndRemove({ _id: subid });
-        return res.json('subscriberdetails001wb deleted');
-    } else {
-        return res.status(500).json({
-            message: 'Error when deleting subscriberdetails001wb.',
-            error: err
-        });
-    }
+	var subid = req.params.subid;
+	var loginid = req.params.loginid;
+	var personid = req.params.personid;
+	if (subid && loginid && personid) {
+		await Person001mb.findByIdAndRemove({ _id: personid });
+		await Login001mb.findByIdAndRemove({ _id: loginid });
+		await Subscriberdetails001wb.findByIdAndRemove({ _id: subid });
+		return res.json('subscriberdetails001wb deleted');
+	} else {
+		return res.status(500).json({
+			message: 'Error when deleting subscriberdetails001wb.',
+			error: err
+		});
+	}
 });
 
 
@@ -5921,16 +5919,16 @@ app.delete('/api/subscriberdetails001wb/:personid/:loginid/:subid', async (req, 
  */
 
 app.get('/api/subscriberpersonalinfo001wb', (req, res) => {
-    Subscriberpersonalinfo001wb.find(function (err, subscriberpersonalinfo001wbs) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriberpersonalinfo001wb.',
-                error: err
-            });
-        }
+	Subscriberpersonalinfo001wb.find(function (err, subscriberpersonalinfo001wbs) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriberpersonalinfo001wb.',
+				error: err
+			});
+		}
 
-        return res.json(subscriberpersonalinfo001wbs);
-    });
+		return res.json(subscriberpersonalinfo001wbs);
+	});
 });
 
 /**
@@ -5961,23 +5959,23 @@ app.get('/api/subscriberpersonalinfo001wb', (req, res) => {
  */
 
 app.get('/api/subscriberpersonalinfo001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Subscriberpersonalinfo001wb.findOne({ _id: id }, function (err, subscriberpersonalinfo001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriberpersonalinfo001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subscriberpersonalinfo001wb.findOne({ _id: id }, function (err, subscriberpersonalinfo001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriberpersonalinfo001wb.',
+				error: err
+			});
+		}
 
-        if (!subscriberpersonalinfo001wb) {
-            return res.status(404).json({
-                message: 'No such subscriberpersonalinfo001wb'
-            });
-        }
+		if (!subscriberpersonalinfo001wb) {
+			return res.status(404).json({
+				message: 'No such subscriberpersonalinfo001wb'
+			});
+		}
 
-        return res.json(subscriberpersonalinfo001wb);
-    });
+		return res.json(subscriberpersonalinfo001wb);
+	});
 });
 
 /**
@@ -6003,32 +6001,32 @@ app.get('/api/subscriberpersonalinfo001wb/:id', (req, res) => {
  */
 
 app.post('/api/subscriberpersonalinfo001wb/personal', (req, res) => {
-    const subscriberpersonalinfo001wb = new Subscriberpersonalinfo001wb();
-    subscriberpersonalinfo001wb.personaldetails = req.body.personaldetails;
-    subscriberpersonalinfo001wb.hobbies = req.body.hobbies;
-    subscriberpersonalinfo001wb.flex1 = req.body.flex1;
-    subscriberpersonalinfo001wb.flex2 = req.body.flex2;
-    subscriberpersonalinfo001wb.flex3 = req.body.flex3;
-    subscriberpersonalinfo001wb.flex4 = req.body.flex4;
-    subscriberpersonalinfo001wb.flex5 = req.body.flex5;
-    subscriberpersonalinfo001wb.flex6 = req.body.flex6;
-    subscriberpersonalinfo001wb.flex7 = req.body.flex7;
-    subscriberpersonalinfo001wb.flex8 = req.body.flex8;
-    subscriberpersonalinfo001wb.flex9 = req.body.flex9;
-    subscriberpersonalinfo001wb.flex10 = req.body.flex10;
-    subscriberpersonalinfo001wb.flex11 = req.body.flex11;
-    subscriberpersonalinfo001wb.flex12 = req.body.flex12;
-    subscriberpersonalinfo001wb.inserteduser = req.body.inserteduser;
-    subscriberpersonalinfo001wb.inserteddatetime = req.body.inserteddatetime;
-    subscriberpersonalinfo001wb.updateduser = req.body.updateduser;
-    subscriberpersonalinfo001wb.updateddatetime = req.body.updateddatetime;
-    subscriberpersonalinfo001wb.save()
-        .then((result) => {
-            return res.json({ message: 'subscriberpersonalinfo created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	const subscriberpersonalinfo001wb = new Subscriberpersonalinfo001wb();
+	subscriberpersonalinfo001wb.personaldetails = req.body.personaldetails;
+	subscriberpersonalinfo001wb.hobbies = req.body.hobbies;
+	subscriberpersonalinfo001wb.flex1 = req.body.flex1;
+	subscriberpersonalinfo001wb.flex2 = req.body.flex2;
+	subscriberpersonalinfo001wb.flex3 = req.body.flex3;
+	subscriberpersonalinfo001wb.flex4 = req.body.flex4;
+	subscriberpersonalinfo001wb.flex5 = req.body.flex5;
+	subscriberpersonalinfo001wb.flex6 = req.body.flex6;
+	subscriberpersonalinfo001wb.flex7 = req.body.flex7;
+	subscriberpersonalinfo001wb.flex8 = req.body.flex8;
+	subscriberpersonalinfo001wb.flex9 = req.body.flex9;
+	subscriberpersonalinfo001wb.flex10 = req.body.flex10;
+	subscriberpersonalinfo001wb.flex11 = req.body.flex11;
+	subscriberpersonalinfo001wb.flex12 = req.body.flex12;
+	subscriberpersonalinfo001wb.inserteduser = req.body.inserteduser;
+	subscriberpersonalinfo001wb.inserteddatetime = req.body.inserteddatetime;
+	subscriberpersonalinfo001wb.updateduser = req.body.updateduser;
+	subscriberpersonalinfo001wb.updateddatetime = req.body.updateddatetime;
+	subscriberpersonalinfo001wb.save()
+		.then((result) => {
+			return res.json({ message: 'subscriberpersonalinfo created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 /**
  * @swagger
@@ -6064,51 +6062,51 @@ app.post('/api/subscriberpersonalinfo001wb/personal', (req, res) => {
  */
 
 app.put('/api/subscriberpersonalinfo001wb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Subscriberpersonalinfo001wb.findOne({ _id: id }, function (err, subscriberpersonalinfo001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriberpersonalinfo001wb',
-                error: err
-            });
-        }
+	Subscriberpersonalinfo001wb.findOne({ _id: id }, function (err, subscriberpersonalinfo001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriberpersonalinfo001wb',
+				error: err
+			});
+		}
 
-        if (!subscriberpersonalinfo001wb) {
-            return res.status(404).json({
-                message: 'No such subscriberpersonalinfo001wb'
-            });
-        }
-        subscriberpersonalinfo001wb.personaldetails = req.body.personaldetails ? req.body.personaldetails : subscriberpersonalinfo001wb.personaldetails;
-        subscriberpersonalinfo001wb.hobbies = req.body.hobbies ? req.body.hobbies : subscriberpersonalinfo001wb.hobbies;
-        subscriberpersonalinfo001wb.flex1 = req.body.flex1 ? req.body.flex1 : subscriberpersonalinfo001wb.flex1;
-        subscriberpersonalinfo001wb.flex2 = req.body.flex2 ? req.body.flex2 : subscriberpersonalinfo001wb.flex2;
-        subscriberpersonalinfo001wb.flex3 = req.body.flex3 ? req.body.flex3 : subscriberpersonalinfo001wb.flex3;
-        subscriberpersonalinfo001wb.flex4 = req.body.flex4 ? req.body.flex4 : subscriberpersonalinfo001wb.flex4;
-        subscriberpersonalinfo001wb.flex5 = req.body.flex5 ? req.body.flex5 : subscriberpersonalinfo001wb.flex5;
-        subscriberpersonalinfo001wb.flex6 = req.body.flex6 ? req.body.flex6 : subscriberpersonalinfo001wb.flex6;
-        subscriberpersonalinfo001wb.flex7 = req.body.flex7 ? req.body.flex7 : subscriberpersonalinfo001wb.flex7;
-        subscriberpersonalinfo001wb.flex8 = req.body.flex8 ? req.body.flex8 : subscriberpersonalinfo001wb.flex8;
-        subscriberpersonalinfo001wb.flex9 = req.body.flex9 ? req.body.flex9 : subscriberpersonalinfo001wb.flex9;
-        subscriberpersonalinfo001wb.flex10 = req.body.flex10 ? req.body.flex10 : subscriberpersonalinfo001wb.flex10;
-        subscriberpersonalinfo001wb.flex11 = req.body.flex11 ? req.body.flex11 : subscriberpersonalinfo001wb.flex11;
-        subscriberpersonalinfo001wb.flex12 = req.body.flex12 ? req.body.flex12 : subscriberpersonalinfo001wb.flex12;
-        subscriberpersonalinfo001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscriberpersonalinfo001wb.inserteduser;
-        subscriberpersonalinfo001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscriberpersonalinfo001wb.inserteddatetime;
-        subscriberpersonalinfo001wb.updateduser = req.body.updateduser ? req.body.updateduser : subscriberpersonalinfo001wb.updateduser;
-        subscriberpersonalinfo001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscriberpersonalinfo001wb.updateddatetime;
+		if (!subscriberpersonalinfo001wb) {
+			return res.status(404).json({
+				message: 'No such subscriberpersonalinfo001wb'
+			});
+		}
+		subscriberpersonalinfo001wb.personaldetails = req.body.personaldetails ? req.body.personaldetails : subscriberpersonalinfo001wb.personaldetails;
+		subscriberpersonalinfo001wb.hobbies = req.body.hobbies ? req.body.hobbies : subscriberpersonalinfo001wb.hobbies;
+		subscriberpersonalinfo001wb.flex1 = req.body.flex1 ? req.body.flex1 : subscriberpersonalinfo001wb.flex1;
+		subscriberpersonalinfo001wb.flex2 = req.body.flex2 ? req.body.flex2 : subscriberpersonalinfo001wb.flex2;
+		subscriberpersonalinfo001wb.flex3 = req.body.flex3 ? req.body.flex3 : subscriberpersonalinfo001wb.flex3;
+		subscriberpersonalinfo001wb.flex4 = req.body.flex4 ? req.body.flex4 : subscriberpersonalinfo001wb.flex4;
+		subscriberpersonalinfo001wb.flex5 = req.body.flex5 ? req.body.flex5 : subscriberpersonalinfo001wb.flex5;
+		subscriberpersonalinfo001wb.flex6 = req.body.flex6 ? req.body.flex6 : subscriberpersonalinfo001wb.flex6;
+		subscriberpersonalinfo001wb.flex7 = req.body.flex7 ? req.body.flex7 : subscriberpersonalinfo001wb.flex7;
+		subscriberpersonalinfo001wb.flex8 = req.body.flex8 ? req.body.flex8 : subscriberpersonalinfo001wb.flex8;
+		subscriberpersonalinfo001wb.flex9 = req.body.flex9 ? req.body.flex9 : subscriberpersonalinfo001wb.flex9;
+		subscriberpersonalinfo001wb.flex10 = req.body.flex10 ? req.body.flex10 : subscriberpersonalinfo001wb.flex10;
+		subscriberpersonalinfo001wb.flex11 = req.body.flex11 ? req.body.flex11 : subscriberpersonalinfo001wb.flex11;
+		subscriberpersonalinfo001wb.flex12 = req.body.flex12 ? req.body.flex12 : subscriberpersonalinfo001wb.flex12;
+		subscriberpersonalinfo001wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscriberpersonalinfo001wb.inserteduser;
+		subscriberpersonalinfo001wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscriberpersonalinfo001wb.inserteddatetime;
+		subscriberpersonalinfo001wb.updateduser = req.body.updateduser ? req.body.updateduser : subscriberpersonalinfo001wb.updateduser;
+		subscriberpersonalinfo001wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscriberpersonalinfo001wb.updateddatetime;
 
-        subscriberpersonalinfo001wb.save(function (err, subscriberpersonalinfo001wb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating subscriberpersonalinfo001wb.',
-                    error: err
-                });
-            }
+		subscriberpersonalinfo001wb.save(function (err, subscriberpersonalinfo001wb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating subscriberpersonalinfo001wb.',
+					error: err
+				});
+			}
 
-            return res.json(subscriberpersonalinfo001wb);
-        });
-    });
+			return res.json(subscriberpersonalinfo001wb);
+		});
+	});
 });
 /**
  * @swagger
@@ -6133,17 +6131,17 @@ app.put('/api/subscriberpersonalinfo001wb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/subscriberpersonalinfo001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Subscriberpersonalinfo001wb.findByIdAndRemove(id, function (err, subscriberpersonalinfo001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the subscriberpersonalinfo001wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subscriberpersonalinfo001wb.findByIdAndRemove(id, function (err, subscriberpersonalinfo001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the subscriberpersonalinfo001wb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -6218,16 +6216,16 @@ app.delete('/api/subscriberpersonalinfo001wb/:id', (req, res) => {
  */
 
 app.get('/api/subscriberprofessionalinfo002wb', (req, res) => {
-    Subscriberprofessionalinfo002wb.find(function (err, subscriberprofessionalinfo002wbs) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriberprofessionalinfo002wb.',
-                error: err
-            });
-        }
+	Subscriberprofessionalinfo002wb.find(function (err, subscriberprofessionalinfo002wbs) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriberprofessionalinfo002wb.',
+				error: err
+			});
+		}
 
-        return res.json(subscriberprofessionalinfo002wbs);
-    });
+		return res.json(subscriberprofessionalinfo002wbs);
+	});
 });
 
 /**
@@ -6258,23 +6256,23 @@ app.get('/api/subscriberprofessionalinfo002wb', (req, res) => {
  */
 
 app.get('/api/subscriberprofessionalinfo002wb/:id', (req, res) => {
-    var id = req.params.id;
-    Subscriberprofessionalinfo002wb.findOne({ _id: id }, function (err, subscriberprofessionalinfo002wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriberprofessionalinfo002wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subscriberprofessionalinfo002wb.findOne({ _id: id }, function (err, subscriberprofessionalinfo002wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriberprofessionalinfo002wb.',
+				error: err
+			});
+		}
 
-        if (!subscriberprofessionalinfo002wb) {
-            return res.status(404).json({
-                message: 'No such subscriberprofessionalinfo002wb'
-            });
-        }
+		if (!subscriberprofessionalinfo002wb) {
+			return res.status(404).json({
+				message: 'No such subscriberprofessionalinfo002wb'
+			});
+		}
 
-        return res.json(subscriberprofessionalinfo002wb);
-    });
+		return res.json(subscriberprofessionalinfo002wb);
+	});
 });
 
 /**
@@ -6301,32 +6299,32 @@ app.get('/api/subscriberprofessionalinfo002wb/:id', (req, res) => {
 
 app.post('/api/subscriberprofessionalinfo002wb/professional', (req, res) => {
 
-    const subscriberprofessionalinfo002wb = new Subscriberprofessionalinfo002wb();
-    subscriberprofessionalinfo002wb.professionaldetails = req.body.professionaldetails;
-    subscriberprofessionalinfo002wb.job = req.body.job;
-    subscriberprofessionalinfo002wb.flex1 = req.body.flex1;
-    subscriberprofessionalinfo002wb.flex2 = req.body.flex2;
-    subscriberprofessionalinfo002wb.flex3 = req.body.flex3;
-    subscriberprofessionalinfo002wb.flex4 = req.body.flex4;
-    subscriberprofessionalinfo002wb.flex5 = req.body.flex5;
-    subscriberprofessionalinfo002wb.flex6 = req.body.flex6;
-    subscriberprofessionalinfo002wb.flex7 = req.body.flex7;
-    subscriberprofessionalinfo002wb.flex8 = req.body.flex8;
-    subscriberprofessionalinfo002wb.flex9 = req.body.flex9;
-    subscriberprofessionalinfo002wb.flex10 = req.body.flex10;
-    subscriberprofessionalinfo002wb.flex11 = req.body.flex11;
-    subscriberprofessionalinfo002wb.flex12 = req.body.flex12;
-    subscriberprofessionalinfo002wb.inserteduser = req.body.inserteduser,
-        subscriberprofessionalinfo002wb.inserteddatetime = req.body.inserteddatetime,
-        subscriberprofessionalinfo002wb.updateduser = req.body.updateduser,
-        subscriberprofessionalinfo002wb.updateddatetime = req.body.updateddatetime
-    subscriberprofessionalinfo002wb.save()
-        .then((result) => {
-            return res.json({ message: 'subscriberprofessional created!' });
-        })
-        .catch((error) => {
-            return res.status(500).json({ error });
-        });
+	const subscriberprofessionalinfo002wb = new Subscriberprofessionalinfo002wb();
+	subscriberprofessionalinfo002wb.professionaldetails = req.body.professionaldetails;
+	subscriberprofessionalinfo002wb.job = req.body.job;
+	subscriberprofessionalinfo002wb.flex1 = req.body.flex1;
+	subscriberprofessionalinfo002wb.flex2 = req.body.flex2;
+	subscriberprofessionalinfo002wb.flex3 = req.body.flex3;
+	subscriberprofessionalinfo002wb.flex4 = req.body.flex4;
+	subscriberprofessionalinfo002wb.flex5 = req.body.flex5;
+	subscriberprofessionalinfo002wb.flex6 = req.body.flex6;
+	subscriberprofessionalinfo002wb.flex7 = req.body.flex7;
+	subscriberprofessionalinfo002wb.flex8 = req.body.flex8;
+	subscriberprofessionalinfo002wb.flex9 = req.body.flex9;
+	subscriberprofessionalinfo002wb.flex10 = req.body.flex10;
+	subscriberprofessionalinfo002wb.flex11 = req.body.flex11;
+	subscriberprofessionalinfo002wb.flex12 = req.body.flex12;
+	subscriberprofessionalinfo002wb.inserteduser = req.body.inserteduser,
+		subscriberprofessionalinfo002wb.inserteddatetime = req.body.inserteddatetime,
+		subscriberprofessionalinfo002wb.updateduser = req.body.updateduser,
+		subscriberprofessionalinfo002wb.updateddatetime = req.body.updateddatetime
+	subscriberprofessionalinfo002wb.save()
+		.then((result) => {
+			return res.json({ message: 'subscriberprofessional created!' });
+		})
+		.catch((error) => {
+			return res.status(500).json({ error });
+		});
 })
 /**
  * @swagger
@@ -6362,50 +6360,50 @@ app.post('/api/subscriberprofessionalinfo002wb/professional', (req, res) => {
  */
 
 app.put('/api/subscriberprofessionalinfo002wb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Subscriberprofessionalinfo002wb.findOne({ _id: id }, function (err, subscriberprofessionalinfo002wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriberprofessionalinfo002wb',
-                error: err
-            });
-        }
+	Subscriberprofessionalinfo002wb.findOne({ _id: id }, function (err, subscriberprofessionalinfo002wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriberprofessionalinfo002wb',
+				error: err
+			});
+		}
 
-        if (!subscriberprofessionalinfo002wb) {
-            return res.status(404).json({
-                message: 'No such subscriberprofessionalinfo002wb'
-            });
-        }
-        subscriberprofessionalinfo002wb.professionaldetails = req.body.professionaldetails ? req.body.professionaldetails : subscriberprofessionalinfo002wb.professionaldetails;
-        subscriberprofessionalinfo002wb.job = req.body.job ? req.body.job : subscriberprofessionalinfo002wb.job;
-        subscriberprofessionalinfo002wb.flex1 = req.body.flex1 ? req.body.flex1 : subscriberprofessionalinfo002wb.flex1;
-        subscriberprofessionalinfo002wb.flex2 = req.body.flex2 ? req.body.flex2 : subscriberprofessionalinfo002wb.flex2;
-        subscriberprofessionalinfo002wb.flex3 = req.body.flex3 ? req.body.flex3 : subscriberprofessionalinfo002wb.flex3;
-        subscriberprofessionalinfo002wb.flex4 = req.body.flex4 ? req.body.flex4 : subscriberprofessionalinfo002wb.flex4;
-        subscriberprofessionalinfo002wb.flex5 = req.body.flex5 ? req.body.flex5 : subscriberprofessionalinfo002wb.flex5;
-        subscriberprofessionalinfo002wb.flex6 = req.body.flex6 ? req.body.flex6 : subscriberprofessionalinfo002wb.flex6;
-        subscriberprofessionalinfo002wb.flex7 = req.body.flex7 ? req.body.flex7 : subscriberprofessionalinfo002wb.flex7;
-        subscriberprofessionalinfo002wb.flex8 = req.body.flex8 ? req.body.flex8 : subscriberprofessionalinfo002wb.flex8;
-        subscriberprofessionalinfo002wb.flex9 = req.body.flex9 ? req.body.flex9 : subscriberprofessionalinfo002wb.flex9;
-        subscriberprofessionalinfo002wb.flex10 = req.body.flex10 ? req.body.flex10 : subscriberprofessionalinfo002wb.flex10;
-        subscriberprofessionalinfo002wb.flex11 = req.body.flex11 ? req.body.flex11 : subscriberprofessionalinfo002wb.flex11;
-        subscriberprofessionalinfo002wb.flex12 = req.body.flex12 ? req.body.flex12 : subscriberprofessionalinfo002wb.flex12;
-        subscriberprofessionalinfo002wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscriberprofessionalinfo002wb.inserteduser;
-        subscriberprofessionalinfo002wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscriberprofessionalinfo002wb.inserteddatetime;
-        subscriberprofessionalinfo002wb.updateduser = req.body.updateduser ? req.body.updateduser : subscriberprofessionalinfo002wb.updateduser;
-        subscriberprofessionalinfo002wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscriberprofessionalinfo002wb.updateddatetime;
-        subscriberprofessionalinfo002wb.save(function (err, subscriberprofessionalinfo002wb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating subscriberprofessionalinfo002wb.',
-                    error: err
-                });
-            }
+		if (!subscriberprofessionalinfo002wb) {
+			return res.status(404).json({
+				message: 'No such subscriberprofessionalinfo002wb'
+			});
+		}
+		subscriberprofessionalinfo002wb.professionaldetails = req.body.professionaldetails ? req.body.professionaldetails : subscriberprofessionalinfo002wb.professionaldetails;
+		subscriberprofessionalinfo002wb.job = req.body.job ? req.body.job : subscriberprofessionalinfo002wb.job;
+		subscriberprofessionalinfo002wb.flex1 = req.body.flex1 ? req.body.flex1 : subscriberprofessionalinfo002wb.flex1;
+		subscriberprofessionalinfo002wb.flex2 = req.body.flex2 ? req.body.flex2 : subscriberprofessionalinfo002wb.flex2;
+		subscriberprofessionalinfo002wb.flex3 = req.body.flex3 ? req.body.flex3 : subscriberprofessionalinfo002wb.flex3;
+		subscriberprofessionalinfo002wb.flex4 = req.body.flex4 ? req.body.flex4 : subscriberprofessionalinfo002wb.flex4;
+		subscriberprofessionalinfo002wb.flex5 = req.body.flex5 ? req.body.flex5 : subscriberprofessionalinfo002wb.flex5;
+		subscriberprofessionalinfo002wb.flex6 = req.body.flex6 ? req.body.flex6 : subscriberprofessionalinfo002wb.flex6;
+		subscriberprofessionalinfo002wb.flex7 = req.body.flex7 ? req.body.flex7 : subscriberprofessionalinfo002wb.flex7;
+		subscriberprofessionalinfo002wb.flex8 = req.body.flex8 ? req.body.flex8 : subscriberprofessionalinfo002wb.flex8;
+		subscriberprofessionalinfo002wb.flex9 = req.body.flex9 ? req.body.flex9 : subscriberprofessionalinfo002wb.flex9;
+		subscriberprofessionalinfo002wb.flex10 = req.body.flex10 ? req.body.flex10 : subscriberprofessionalinfo002wb.flex10;
+		subscriberprofessionalinfo002wb.flex11 = req.body.flex11 ? req.body.flex11 : subscriberprofessionalinfo002wb.flex11;
+		subscriberprofessionalinfo002wb.flex12 = req.body.flex12 ? req.body.flex12 : subscriberprofessionalinfo002wb.flex12;
+		subscriberprofessionalinfo002wb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscriberprofessionalinfo002wb.inserteduser;
+		subscriberprofessionalinfo002wb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscriberprofessionalinfo002wb.inserteddatetime;
+		subscriberprofessionalinfo002wb.updateduser = req.body.updateduser ? req.body.updateduser : subscriberprofessionalinfo002wb.updateduser;
+		subscriberprofessionalinfo002wb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscriberprofessionalinfo002wb.updateddatetime;
+		subscriberprofessionalinfo002wb.save(function (err, subscriberprofessionalinfo002wb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating subscriberprofessionalinfo002wb.',
+					error: err
+				});
+			}
 
-            return res.json(subscriberprofessionalinfo002wb);
-        });
-    });
+			return res.json(subscriberprofessionalinfo002wb);
+		});
+	});
 });
 /**
  * @swagger
@@ -6430,17 +6428,17 @@ app.put('/api/subscriberprofessionalinfo002wb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/subscriberprofessionalinfo002wb/:id', (req, res) => {
-    var id = req.params.id;
-    Subscriberprofessionalinfo002wb.findByIdAndRemove(id, function (err, subscriberprofessionalinfo002wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the subscriberprofessionalinfo002wb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subscriberprofessionalinfo002wb.findByIdAndRemove(id, function (err, subscriberprofessionalinfo002wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the subscriberprofessionalinfo002wb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 
@@ -6497,16 +6495,16 @@ app.delete('/api/subscriberprofessionalinfo002wb/:id', (req, res) => {
  */
 
 app.get('/api/subscriptionmaster001mb', (req, res) => {
-    Subscriptionmaster001mb.find(function (err, subscriptionmaster001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriptionmaster001mb.',
-                error: err
-            });
-        }
+	Subscriptionmaster001mb.find(function (err, subscriptionmaster001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriptionmaster001mb.',
+				error: err
+			});
+		}
 
-        return res.json(subscriptionmaster001mb);
-    });
+		return res.json(subscriptionmaster001mb);
+	});
 });
 
 /**
@@ -6537,23 +6535,23 @@ app.get('/api/subscriptionmaster001mb', (req, res) => {
  */
 
 app.get('/api/subscriptionmaster001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Subscriptionmaster001mb.findOne({ _id: id }, function (err, subscriptionmaster001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriptionmaster001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subscriptionmaster001mb.findOne({ _id: id }, function (err, subscriptionmaster001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriptionmaster001mb.',
+				error: err
+			});
+		}
 
-        if (!subscriptionmaster001mb) {
-            return res.status(404).json({
-                message: 'No such subscriptionmaster001mb'
-            });
-        }
+		if (!subscriptionmaster001mb) {
+			return res.status(404).json({
+				message: 'No such subscriptionmaster001mb'
+			});
+		}
 
-        return res.json(subscriptionmaster001mb);
-    });
+		return res.json(subscriptionmaster001mb);
+	});
 });
 
 /**
@@ -6579,27 +6577,27 @@ app.get('/api/subscriptionmaster001mb/:id', (req, res) => {
  */
 
 app.post('/api/subscriptionmaster001mb/master', (req, res) => {
-    const subscriptionmaster001mb = new Subscriptionmaster001mb();
-    subscriptionmaster001mb.subpname = req.body.subpname;
-    subscriptionmaster001mb.description = req.body.description;
-    subscriptionmaster001mb.tenure = req.body.tenure;
-    subscriptionmaster001mb.amount = req.body.amount;
-    subscriptionmaster001mb.status = req.body.status;
-    subscriptionmaster001mb.discountflag = req.body.discountflag;
-    subscriptionmaster001mb.inserteduser = req.body.inserteduser;
-    subscriptionmaster001mb.inserteddatetime = req.body.inserteddatetime;
-    subscriptionmaster001mb.updateduser = req.body.updateduser;
-    subscriptionmaster001mb.updateddatetime = req.body.updateddatetime;
-    subscriptionmaster001mb.save(function (err, subscriptionmaster001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when creating subscriptionmaster001mb',
-                error: err
-            });
-        }
+	const subscriptionmaster001mb = new Subscriptionmaster001mb();
+	subscriptionmaster001mb.subpname = req.body.subpname;
+	subscriptionmaster001mb.description = req.body.description;
+	subscriptionmaster001mb.tenure = req.body.tenure;
+	subscriptionmaster001mb.amount = req.body.amount;
+	subscriptionmaster001mb.status = req.body.status;
+	subscriptionmaster001mb.discountflag = req.body.discountflag;
+	subscriptionmaster001mb.inserteduser = req.body.inserteduser;
+	subscriptionmaster001mb.inserteddatetime = req.body.inserteddatetime;
+	subscriptionmaster001mb.updateduser = req.body.updateduser;
+	subscriptionmaster001mb.updateddatetime = req.body.updateddatetime;
+	subscriptionmaster001mb.save(function (err, subscriptionmaster001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when creating subscriptionmaster001mb',
+				error: err
+			});
+		}
 
-        return res.json("subscriptionmaster001mb created");
-    });
+		return res.json("subscriptionmaster001mb created");
+	});
 })
 /**
  * @swagger
@@ -6635,43 +6633,43 @@ app.post('/api/subscriptionmaster001mb/master', (req, res) => {
  */
 
 app.put('/api/subscriptionmaster001mb/:id', (req, res) => {
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Subscriptionmaster001mb.findOne({ _id: id }, function (err, subscriptionmaster001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting subscriptionmaster001mb',
-                error: err
-            });
-        }
+	Subscriptionmaster001mb.findOne({ _id: id }, function (err, subscriptionmaster001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting subscriptionmaster001mb',
+				error: err
+			});
+		}
 
-        if (!subscriptionmaster001mb) {
-            return res.status(404).json({
-                message: 'No such subscriptionmaster001mb'
-            });
-        }
-        subscriptionmaster001mb.subpname = req.body.subpname ? req.body.subpname : subscriptionmaster001mb.subpname;
-        subscriptionmaster001mb.description = req.body.description ? req.body.description : subscriptionmaster001mb.description;
-        subscriptionmaster001mb.tenure = req.body.tenure ? req.body.tenure : subscriptionmaster001mb.tenure;
-        subscriptionmaster001mb.amount = req.body.amount ? req.body.amount : subscriptionmaster001mb.amount;
-        subscriptionmaster001mb.status = req.body.status ? req.body.status : subscriptionmaster001mb.status;
-        subscriptionmaster001mb.discountflag = req.body.discountflag ? req.body.discountflag : subscriptionmaster001mb.discountflag;
-        subscriptionmaster001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscriptionmaster001mb.inserteduser;
-        subscriptionmaster001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscriptionmaster001mb.inserteddatetime;
-        subscriptionmaster001mb.updateduser = req.body.updateduser ? req.body.updateduser : subscriptionmaster001mb.updateduser;
-        subscriptionmaster001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscriptionmaster001mb.updateddatetime;
+		if (!subscriptionmaster001mb) {
+			return res.status(404).json({
+				message: 'No such subscriptionmaster001mb'
+			});
+		}
+		subscriptionmaster001mb.subpname = req.body.subpname ? req.body.subpname : subscriptionmaster001mb.subpname;
+		subscriptionmaster001mb.description = req.body.description ? req.body.description : subscriptionmaster001mb.description;
+		subscriptionmaster001mb.tenure = req.body.tenure ? req.body.tenure : subscriptionmaster001mb.tenure;
+		subscriptionmaster001mb.amount = req.body.amount ? req.body.amount : subscriptionmaster001mb.amount;
+		subscriptionmaster001mb.status = req.body.status ? req.body.status : subscriptionmaster001mb.status;
+		subscriptionmaster001mb.discountflag = req.body.discountflag ? req.body.discountflag : subscriptionmaster001mb.discountflag;
+		subscriptionmaster001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : subscriptionmaster001mb.inserteduser;
+		subscriptionmaster001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : subscriptionmaster001mb.inserteddatetime;
+		subscriptionmaster001mb.updateduser = req.body.updateduser ? req.body.updateduser : subscriptionmaster001mb.updateduser;
+		subscriptionmaster001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : subscriptionmaster001mb.updateddatetime;
 
-        subscriptionmaster001mb.save(function (err, subscriptionmaster001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating subscriptionmaster001mb.',
-                    error: err
-                });
-            }
+		subscriptionmaster001mb.save(function (err, subscriptionmaster001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating subscriptionmaster001mb.',
+					error: err
+				});
+			}
 
-            return res.json(subscriptionmaster001mb);
-        });
-    });
+			return res.json(subscriptionmaster001mb);
+		});
+	});
 });
 /**
  * @swagger
@@ -6696,17 +6694,17 @@ app.put('/api/subscriptionmaster001mb/:id', (req, res) => {
  *         description: failed
  */
 app.delete('/api/subscriptionmaster001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Subscriptionmaster001mb.findByIdAndRemove(id, function (err, subscriptionmaster001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the subscriptionmaster001mb.',
-                error: err
-            });
-        }
+	var id = req.params.id;
+	Subscriptionmaster001mb.findByIdAndRemove(id, function (err, subscriptionmaster001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the subscriptionmaster001mb.',
+				error: err
+			});
+		}
 
-        return res.json({ message: 'Deleted Sucessfully' });
-    });
+		return res.json({ message: 'Deleted Sucessfully' });
+	});
 });
 
 //-----------------user001wb schema method-----------------//
@@ -6770,15 +6768,15 @@ app.delete('/api/subscriptionmaster001mb/:id', (req, res) => {
  */
 
 app.get('/api/users001wb', (req, res) => {
-    Users001wb.find(function (err, users001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting users001wb.',
-                error: err
-            });
-        }
-        return res.json(users001wb);
-    });
+	Users001wb.find(function (err, users001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting users001wb.',
+				error: err
+			});
+		}
+		return res.json(users001wb);
+	});
 });
 
 /**
@@ -6801,24 +6799,24 @@ app.get('/api/users001wb', (req, res) => {
  *                             $ref: '#/components/schemas/users001wb'
  */
 app.get('/api/users001wb/verify', async (req, res) => {
-    const token = req.query.token;
-    if (!token) {
-        return res.status(403).send("A token is required for authentication");
-    }
-    try {
-        const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-        req.verifydecode = decoded;
-        const person = await Person001mb.findOne({ email: decoded.email, roleid: decoded.roleid, });
-        if (person.verified) {
-            return res.status(409).send({ message: " Account Verified Please Login" });
-        } else {
-            person.verified = true;
-            person.save();
-            return res.status(200).send({ message: "Account Verified" });
-        }
-    } catch (err) {
-        return res.status(401).send("Invalid Token");
-    }
+	const token = req.query.token;
+	if (!token) {
+		return res.status(403).send("A token is required for authentication");
+	}
+	try {
+		const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+		req.verifydecode = decoded;
+		const person = await Person001mb.findOne({ email: decoded.email, roleid: decoded.roleid, });
+		if (person.verified) {
+			return res.status(409).send({ message: " Account Verified Please Login" });
+		} else {
+			person.verified = true;
+			person.save();
+			return res.status(200).send({ message: "Account Verified" });
+		}
+	} catch (err) {
+		return res.status(401).send("Invalid Token");
+	}
 });
 /**
  * @swagger
@@ -6847,21 +6845,21 @@ app.get('/api/users001wb/verify', async (req, res) => {
  *                             $ref: '#/components/schemas/users001wb'
  */
 app.get('/api/users001wb/:id', (req, res) => {
-    var id = req.params.id;
-    Users001wb.findOne({ _id: id }, function (err, users001wb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting users001wb.',
-                error: err
-            });
-        }
-        if (!users001wb) {
-            return res.status(404).json({
-                message: 'No such users001wb'
-            });
-        }
-        return res.json(users001wb);
-    });
+	var id = req.params.id;
+	Users001wb.findOne({ _id: id }, function (err, users001wb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting users001wb.',
+				error: err
+			});
+		}
+		if (!users001wb) {
+			return res.status(404).json({
+				message: 'No such users001wb'
+			});
+		}
+		return res.json(users001wb);
+	});
 });
 /**
  * @swagger
@@ -6885,114 +6883,114 @@ app.get('/api/users001wb/:id', (req, res) => {
  *         description: failed
  */
 app.post('/api/users001wb/user', async (req, res) => {
-    const person001mb = new Person001mb();
-    person001mb.subcatcode = req.body.subcatcode.id;
-    person001mb.professionalid = req.body.professionalid.id;
-    person001mb.categoryid = req.body.categoryid.id;
-    person001mb.languageid = req.body.languageid.id;
-    person001mb.personalid = req.body.personalid.id;
-    person001mb.religionid = req.body.religionid.id;
-    person001mb.classificationid = req.body.classificationid.id;
-    person001mb.subscsubspid = req.body.subscsubspid.id;
-    person001mb.regionalid = req.body.regionalid.id;
-    person001mb.companycode = req.body.companycode.id;
-    person001mb.countryid = req.body.countryid.id;
-    person001mb.cityid = req.body.cityid.id;
-    person001mb.stateid = req.body.stateid.id;
-    person001mb.roleid = req.body.roleid.id;
-    person001mb.firstname = req.body.firstname;
-    person001mb.lasttname = req.body.lasttname;
-    person001mb.zipcode = req.body.zipcode;
-    person001mb.dob = req.body.dob;
-    person001mb.confirmemail = req.body.confirmemail;
-    person001mb.email = req.body.email;
-    person001mb.subscname = req.body.subscname;
-    person001mb.age = req.body.age;
-    person001mb.verified = false;
-    person001mb.sex = req.body.sex;
-    person001mb.subscdesc = req.body.subscdesc;
-    person001mb.aboutme = req.body.aboutme;
-    person001mb.address = req.body.address;
-    person001mb.phoneno = req.body.phoneno;
-    person001mb.landline = req.body.landline;
-    person001mb.inserteduser = req.body.inserteduser;
-    person001mb.inserteddatetime = req.body.inserteddatetime;
-    person001mb.updateduser = req.body.updateduser;
-    person001mb.updateddatetime = req.body.updateddatetime;
-    person001mb.status = req.body.status;
+	const person001mb = new Person001mb();
+	person001mb.subcatcode = req.body.subcatcode.id;
+	person001mb.professionalid = req.body.professionalid.id;
+	person001mb.categoryid = req.body.categoryid.id;
+	person001mb.languageid = req.body.languageid.id;
+	person001mb.personalid = req.body.personalid.id;
+	person001mb.religionid = req.body.religionid.id;
+	person001mb.classificationid = req.body.classificationid.id;
+	person001mb.subscsubspid = req.body.subscsubspid.id;
+	person001mb.regionalid = req.body.regionalid.id;
+	person001mb.companycode = req.body.companycode.id;
+	person001mb.countryid = req.body.countryid.id;
+	person001mb.cityid = req.body.cityid.id;
+	person001mb.stateid = req.body.stateid.id;
+	person001mb.roleid = req.body.roleid.id;
+	person001mb.firstname = req.body.firstname;
+	person001mb.lasttname = req.body.lasttname;
+	person001mb.zipcode = req.body.zipcode;
+	person001mb.dob = req.body.dob;
+	person001mb.confirmemail = req.body.confirmemail;
+	person001mb.email = req.body.email;
+	person001mb.subscname = req.body.subscname;
+	person001mb.age = req.body.age;
+	person001mb.verified = false;
+	person001mb.sex = req.body.sex;
+	person001mb.subscdesc = req.body.subscdesc;
+	person001mb.aboutme = req.body.aboutme;
+	person001mb.address = req.body.address;
+	person001mb.phoneno = req.body.phoneno;
+	person001mb.landline = req.body.landline;
+	person001mb.inserteduser = req.body.inserteduser;
+	person001mb.inserteddatetime = req.body.inserteddatetime;
+	person001mb.updateduser = req.body.updateduser;
+	person001mb.updateddatetime = req.body.updateddatetime;
+	person001mb.status = req.body.status;
 
-    if (!(person001mb.email && person001mb.firstname && person001mb.roleid)) {
-        return res.status(402).json("Enter a Required Field");
-    }
-    const oldUser = await Person001mb.findOne({ email: person001mb.email, roleid: person001mb.roleid });
-    if (oldUser) {
-        return res.status(409).send("User Already Exist");
-    }
-    const token = jwt.sign({ email: person001mb.email, roleid: person001mb.roleid }, process.env.TOKEN_KEY,
-        {
-            expiresIn: "6h",
-        }
-    );
-    person001mb.token = token;
-    let person = await person001mb.save();
+	if (!(person001mb.email && person001mb.firstname && person001mb.roleid)) {
+		return res.status(402).json("Enter a Required Field");
+	}
+	const oldUser = await Person001mb.findOne({ email: person001mb.email, roleid: person001mb.roleid });
+	if (oldUser) {
+		return res.status(409).send("User Already Exist");
+	}
+	const token = jwt.sign({ email: person001mb.email, roleid: person001mb.roleid }, process.env.TOKEN_KEY,
+		{
+			expiresIn: "6h",
+		}
+	);
+	person001mb.token = token;
+	let person = await person001mb.save();
 
-    const login001mb = new Login001mb()
-    login001mb.username = req.body.username;
-    login001mb.password = bcrypt.hashSync(req.body.password, 10);
-    login001mb.roleid = req.body.roleid.id;
-    login001mb.inserteduser = req.body.inserteduser;
-    login001mb.inserteddatetime = req.body.inserteddatetime;
-    login001mb.updateduser = req.body.updateduser;
-    login001mb.status = req.body.status;
-    login001mb.personid = person._id;
-    await login001mb.save()
+	const login001mb = new Login001mb()
+	login001mb.username = req.body.username;
+	login001mb.password = bcrypt.hashSync(req.body.password, 10);
+	login001mb.roleid = req.body.roleid.id;
+	login001mb.inserteduser = req.body.inserteduser;
+	login001mb.inserteddatetime = req.body.inserteddatetime;
+	login001mb.updateduser = req.body.updateduser;
+	login001mb.status = req.body.status;
+	login001mb.personid = person._id;
+	await login001mb.save()
 
 
-    const users001wb = new Users001wb();
-    users001wb.personid = person._id;
-    users001wb.employeeid = req.body.employeeid;
-    users001wb.bankname = req.body.bankname;
-    users001wb.accountnumber = req.body.accountnumber;
-    users001wb.insurance = req.body.insurance;
-    users001wb.accounttype = req.body.accounttype;
-    users001wb.inserteduser = req.body.inserteduser;
-    users001wb.inserteddatetime = req.body.inserteddatetime;
-    users001wb.updateduser = req.body.updateduser;
-    users001wb.status = req.body.status;
-    await users001wb.save()
+	const users001wb = new Users001wb();
+	users001wb.personid = person._id;
+	users001wb.employeeid = req.body.employeeid;
+	users001wb.bankname = req.body.bankname;
+	users001wb.accountnumber = req.body.accountnumber;
+	users001wb.insurance = req.body.insurance;
+	users001wb.accounttype = req.body.accounttype;
+	users001wb.inserteduser = req.body.inserteduser;
+	users001wb.inserteddatetime = req.body.inserteddatetime;
+	users001wb.updateduser = req.body.updateduser;
+	users001wb.status = req.body.status;
+	await users001wb.save()
 
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'siriusmatrimoney@gmail.com',
-            pass: 'Welcome!23'
-        }
-    });
-    const handlebarOptions = {
-        viewEngine: {
-            partialsDir: path.resolve('./app/templates'),
-            defaultLayout: false,
-        },
-        viewPath: path.resolve('./app/templates'),
-        extName: ".handlebars"
-    };
-    transporter.use('compile', hbs(handlebarOptions))
-    const mailOptions = {
-        from: 'siriusmatrimoney@gmail.com',
-        to: person001mb.email,
-        subject: 'Sirius Matrimony Confirmation',
-        template: 'mail',
-        context: {
-            name: "Sirius Matrimony",
-            url: `http://localhost:8081/api/users001wb/verify?token=${token}`
-        }
-    };
-    transporter.sendMail(mailOptions, function (err, info) {
-        if (err)
-            console.log(err)
-        else
-            return res.json({ message: 'email created!' });
-    })
+	var transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: 'siriusmatrimoney@gmail.com',
+			pass: 'Welcome!23'
+		}
+	});
+	const handlebarOptions = {
+		viewEngine: {
+			partialsDir: path.resolve('./app/templates'),
+			defaultLayout: false,
+		},
+		viewPath: path.resolve('./app/templates'),
+		extName: ".handlebars"
+	};
+	transporter.use('compile', hbs(handlebarOptions))
+	const mailOptions = {
+		from: 'siriusmatrimoney@gmail.com',
+		to: person001mb.email,
+		subject: 'Sirius Matrimony Confirmation',
+		template: 'mail',
+		context: {
+			name: "Sirius Matrimony",
+			url: `http://localhost:8081/api/users001wb/verify?token=${token}`
+		}
+	};
+	transporter.sendMail(mailOptions, function (err, info) {
+		if (err)
+			console.log(err)
+		else
+			return res.json({ message: 'email created!' });
+	})
 });
 /**
  * @swagger
@@ -7039,71 +7037,71 @@ app.post('/api/users001wb/user', async (req, res) => {
  *                             $ref: '#/components/schemas/users001wb'
  */
 app.put('/api/users001wb/:personid/:loginid/:userid', async (req, res) => {
-    var personid = req.params.personid;
-    var loginid = req.params.loginid;
-    var userid = req.params.userid;
-    const person001mb = await Person001mb.findOne({ _id: personid });
-    if (person001mb) {
-        person001mb.email = req.body.email ? req.body.email : person001mb.email;
-        person001mb.personalid = req.body.personalid.id ? req.body.personalid.id : person001mb.personalid;
-        person001mb.subcatcode = req.body.subcatcode.id ? req.body.subcatcode.id : person001mb.subcatcode;
-        person001mb.professionalid = req.body.professionalid.id ? req.body.professionalid.id : person001mb.professionalid;
-        person001mb.categoryid = req.body.categoryid.id ? req.body.categoryid.id : person001mb.categoryid;
-        person001mb.languageid = req.body.languageid.id ? req.body.languageid.id : person001mb.languageid;
-        person001mb.religionid = req.body.religionid.id ? req.body.religionid.id : person001mb.religionid;
-        person001mb.classificationid = req.body.classificationid.id ? req.body.classificationid.id : person001mb.classificationid;
-        person001mb.subscsubspid = req.body.subscsubspid.id ? req.body.subscsubspid.id : person001mb.subscsubspid;
-        person001mb.regionalid = req.body.regionalid.id ? req.body.regionalid.id : person001mb.regionalid;
-        person001mb.companycode = req.body.companycode.id ? req.body.companycode.id : person001mb.companycode;
-        person001mb.cityid = req.body.cityid.id ? req.body.cityid.id : person001mb.cityid;
-        person001mb.stateid = req.body.stateid.id ? req.body.stateid.id : person001mb.stateid;
-        person001mb.roleid = req.body.roleid.id ? req.body.roleid.id : person001mb.roleid;
-        person001mb.age = req.body.age ? req.body.age : person001mb.age;
-        person001mb.sex = req.body.sex ? req.body.sex : person001mb.sex;
-        person001mb.countryid = req.body.countryid.id ? req.body.countryid.id : person001mb.countryid;
-        person001mb.address = req.body.address ? req.body.address : person001mb.address;
-        person001mb.phoneno = req.body.phoneno ? req.body.phoneno : person001mb.phoneno;
-        person001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : person001mb.inserteduser;
-        person001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : person001mb.inserteddatetime;
-        person001mb.updateduser = req.body.updateduser ? req.body.updateduser : person001mb.updateduser;
-        person001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : person001mb.updateddatetime;
-        person001mb.firstname = req.body.firstname ? req.body.firstname : person001mb.firstname;
-        person001mb.lasttname = req.body.lasttname ? req.body.lasttname : person001mb.lasttname;
-        person001mb.zipcode = req.body.zipcode ? req.body.zipcode : person001mb.zipcode;
-        person001mb.dob = req.body.dob ? req.body.dob : person001mb.dob;
-        person001mb.confirmemail = req.body.confirmemail ? req.body.confirmemail : person001mb.confirmemail;
-        person001mb.landline = req.body.landline ? req.body.landline : person001mb.landline;
-        person001mb.status = req.body.status ? req.body.status : person001mb.status;
-        let person = person001mb.save();
-        const login001mb = await Login001mb.findOne({ _id: loginid });
-        login001mb.personid = person._id ? person._id : login001mb.personid;
-        login001mb.username = req.body.username ? req.body.username : login001mb.username;
-        login001mb.password = req.body.password ? bcrypt.hashSync(req.body.password, 10) : login001mb.password;
-        login001mb.roleid = req.body.roleid.id ? req.body.roleid.id : login001mb.roleid;
-        login001mb.status = req.body.status ? req.body.status : login001mb.status
-        login001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : login001mb.inserteduser;
-        login001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : login001mb.inserteddatetime;
-        login001mb.updateduser = req.body.updateduser ? req.body.updateduser : login001mb.updateduser;
-        login001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : login001mb.updateddatetime;
-        login001mb.save();
-        const users001wb = await Users001wb.findOne({ _id: userid });
-        users001wb.employeeid = req.body.employeeid ? req.body.employeeid : users001wb.employeeid;
-        users001wb.personid = person._id ? person._id : users001wb.personid;
-        users001wb.bankname = req.body.bankname ? req.body.bankname : users001wb.bankname;
-        users001wb.accountnumber = req.body.accountnumber ? req.body.accountnumber : users001wb.accountnumber;
-        users001wb.insurance = req.body.insurance ? req.body.insurance : users001wb.insurance;
-        users001wb.accounttype = req.body.accounttype ? req.body.accounttype : users001wb.accounttype;
-        users001wb.save(function (err, users001wb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating users001wb.',
-                    error: err
-                });
-            }
+	var personid = req.params.personid;
+	var loginid = req.params.loginid;
+	var userid = req.params.userid;
+	const person001mb = await Person001mb.findOne({ _id: personid });
+	if (person001mb) {
+		person001mb.email = req.body.email ? req.body.email : person001mb.email;
+		person001mb.personalid = req.body.personalid.id ? req.body.personalid.id : person001mb.personalid;
+		person001mb.subcatcode = req.body.subcatcode.id ? req.body.subcatcode.id : person001mb.subcatcode;
+		person001mb.professionalid = req.body.professionalid.id ? req.body.professionalid.id : person001mb.professionalid;
+		person001mb.categoryid = req.body.categoryid.id ? req.body.categoryid.id : person001mb.categoryid;
+		person001mb.languageid = req.body.languageid.id ? req.body.languageid.id : person001mb.languageid;
+		person001mb.religionid = req.body.religionid.id ? req.body.religionid.id : person001mb.religionid;
+		person001mb.classificationid = req.body.classificationid.id ? req.body.classificationid.id : person001mb.classificationid;
+		person001mb.subscsubspid = req.body.subscsubspid.id ? req.body.subscsubspid.id : person001mb.subscsubspid;
+		person001mb.regionalid = req.body.regionalid.id ? req.body.regionalid.id : person001mb.regionalid;
+		person001mb.companycode = req.body.companycode.id ? req.body.companycode.id : person001mb.companycode;
+		person001mb.cityid = req.body.cityid.id ? req.body.cityid.id : person001mb.cityid;
+		person001mb.stateid = req.body.stateid.id ? req.body.stateid.id : person001mb.stateid;
+		person001mb.roleid = req.body.roleid.id ? req.body.roleid.id : person001mb.roleid;
+		person001mb.age = req.body.age ? req.body.age : person001mb.age;
+		person001mb.sex = req.body.sex ? req.body.sex : person001mb.sex;
+		person001mb.countryid = req.body.countryid.id ? req.body.countryid.id : person001mb.countryid;
+		person001mb.address = req.body.address ? req.body.address : person001mb.address;
+		person001mb.phoneno = req.body.phoneno ? req.body.phoneno : person001mb.phoneno;
+		person001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : person001mb.inserteduser;
+		person001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : person001mb.inserteddatetime;
+		person001mb.updateduser = req.body.updateduser ? req.body.updateduser : person001mb.updateduser;
+		person001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : person001mb.updateddatetime;
+		person001mb.firstname = req.body.firstname ? req.body.firstname : person001mb.firstname;
+		person001mb.lasttname = req.body.lasttname ? req.body.lasttname : person001mb.lasttname;
+		person001mb.zipcode = req.body.zipcode ? req.body.zipcode : person001mb.zipcode;
+		person001mb.dob = req.body.dob ? req.body.dob : person001mb.dob;
+		person001mb.confirmemail = req.body.confirmemail ? req.body.confirmemail : person001mb.confirmemail;
+		person001mb.landline = req.body.landline ? req.body.landline : person001mb.landline;
+		person001mb.status = req.body.status ? req.body.status : person001mb.status;
+		let person = person001mb.save();
+		const login001mb = await Login001mb.findOne({ _id: loginid });
+		login001mb.personid = person._id ? person._id : login001mb.personid;
+		login001mb.username = req.body.username ? req.body.username : login001mb.username;
+		login001mb.password = req.body.password ? bcrypt.hashSync(req.body.password, 10) : login001mb.password;
+		login001mb.roleid = req.body.roleid.id ? req.body.roleid.id : login001mb.roleid;
+		login001mb.status = req.body.status ? req.body.status : login001mb.status
+		login001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : login001mb.inserteduser;
+		login001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : login001mb.inserteddatetime;
+		login001mb.updateduser = req.body.updateduser ? req.body.updateduser : login001mb.updateduser;
+		login001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : login001mb.updateddatetime;
+		login001mb.save();
+		const users001wb = await Users001wb.findOne({ _id: userid });
+		users001wb.employeeid = req.body.employeeid ? req.body.employeeid : users001wb.employeeid;
+		users001wb.personid = person._id ? person._id : users001wb.personid;
+		users001wb.bankname = req.body.bankname ? req.body.bankname : users001wb.bankname;
+		users001wb.accountnumber = req.body.accountnumber ? req.body.accountnumber : users001wb.accountnumber;
+		users001wb.insurance = req.body.insurance ? req.body.insurance : users001wb.insurance;
+		users001wb.accounttype = req.body.accounttype ? req.body.accounttype : users001wb.accounttype;
+		users001wb.save(function (err, users001wb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating users001wb.',
+					error: err
+				});
+			}
 
-            return res.json('users001wb updated');
-        });
-    }
+			return res.json('users001wb updated');
+		});
+	}
 });
 /**
  * @swagger
@@ -7140,21 +7138,21 @@ app.put('/api/users001wb/:personid/:loginid/:userid', async (req, res) => {
  *         description: failed 
  */
 app.delete('/api/users001wb/:personid/:loginid/:userid', async (req, res) => {
-    var userid = req.params.userid;
-    var loginid = req.params.loginid;
-    var personid = req.params.personid;
-    if (userid && loginid && personid) {
-        console.log("testing", userid, loginid, personid)
-        await Person001mb.findByIdAndRemove({ _id: personid });
-        await Login001mb.findByIdAndRemove({ _id: loginid });
-        await Users001wb.findByIdAndRemove({ _id: userid });
-        return res.json('users001wb deleted');
-    } else {
-        return res.status(500).json({
-            message: 'Error when deleting users001wb.',
-            error: err
-        });
-    }
+	var userid = req.params.userid;
+	var loginid = req.params.loginid;
+	var personid = req.params.personid;
+	if (userid && loginid && personid) {
+		console.log("testing", userid, loginid, personid)
+		await Person001mb.findByIdAndRemove({ _id: personid });
+		await Login001mb.findByIdAndRemove({ _id: loginid });
+		await Users001wb.findByIdAndRemove({ _id: userid });
+		return res.json('users001wb deleted');
+	} else {
+		return res.status(500).json({
+			message: 'Error when deleting users001wb.',
+			error: err
+		});
+	}
 });
 
 // ********************** payment001mb schema method****************//
@@ -7210,15 +7208,15 @@ app.delete('/api/users001wb/:personid/:loginid/:userid', async (req, res) => {
  */
 
 app.get('/api/payment001mb', (req, res) => {
-    Payment001mb.find(function (err, payment001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting payment001mb.',
-                error: err
-            });
-        }
-        return res.json(payment001mb);
-    });
+	Payment001mb.find(function (err, payment001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting payment001mb.',
+				error: err
+			});
+		}
+		return res.json(payment001mb);
+	});
 });
 /**
  * @swagger
@@ -7247,21 +7245,21 @@ app.get('/api/payment001mb', (req, res) => {
  *                             $ref: '#/components/schemas/payment001mb'
  */
 app.get('/api/payment001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Payment001mb.findOne({ _id: id }, function (err, payment001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting payment001mb.',
-                error: err
-            });
-        }
-        if (!payment001mb) {
-            return res.status(404).json({
-                message: 'No such payment001mb'
-            });
-        }
-        return res.json(payment001mb);
-    });
+	var id = req.params.id;
+	Payment001mb.findOne({ _id: id }, function (err, payment001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting payment001mb.',
+				error: err
+			});
+		}
+		if (!payment001mb) {
+			return res.status(404).json({
+				message: 'No such payment001mb'
+			});
+		}
+		return res.json(payment001mb);
+	});
 });
 
 /**
@@ -7286,28 +7284,28 @@ app.get('/api/payment001mb/:id', (req, res) => {
  *         description: failed
  */
 app.post('/api/payment001mb/payment', async (req, res) => {
-    const payment001mb = new Payment001mb();
-    payment001mb.subpid = req.body.subpid.id;
-    payment001mb.subcid = req.body.subcid.id;
-    payment001mb.payment = req.body.payment;
-    payment001mb.status = req.body.status;
-    payment001mb.inserteduser = req.body.inserteduser;
-    payment001mb.inserteddatetime = req.body.inserteddatetime;
-    payment001mb.updateduser = req.body.updateduser;
-    payment001mb.updateddatetime = req.body.updateddatetime;
-    Subscriberdetails001wb.findOne({ _id: payment001mb.subcid }, (err, user) => {
-        if (user) {
-            user.payid.push(payment001mb);
-            user.save();
-            payment001mb.save();
-            return res.json({ message: 'payment001mb created!' });
-        } else {
-            return res.status(500).json({
-                message: 'Error when creating payment001mb'
-            });
-        }
+	const payment001mb = new Payment001mb();
+	payment001mb.subpid = req.body.subpid.id;
+	payment001mb.subcid = req.body.subcid.id;
+	payment001mb.payment = req.body.payment;
+	payment001mb.status = req.body.status;
+	payment001mb.inserteduser = req.body.inserteduser;
+	payment001mb.inserteddatetime = req.body.inserteddatetime;
+	payment001mb.updateduser = req.body.updateduser;
+	payment001mb.updateddatetime = req.body.updateddatetime;
+	Subscriberdetails001wb.findOne({ _id: payment001mb.subcid }, (err, user) => {
+		if (user) {
+			user.payid.push(payment001mb);
+			user.save();
+			payment001mb.save();
+			return res.json({ message: 'payment001mb created!' });
+		} else {
+			return res.status(500).json({
+				message: 'Error when creating payment001mb'
+			});
+		}
 
-    });
+	});
 });
 
 /**
@@ -7344,40 +7342,40 @@ app.post('/api/payment001mb/payment', async (req, res) => {
  */
 app.put('/api/payment001mb/:id', (req, res) => {
 
-    var id = req.params.id;
+	var id = req.params.id;
 
-    Payment001mb.findOne({ _id: id }, function (err, payment001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting payment001mb',
-                error: err
-            });
-        }
+	Payment001mb.findOne({ _id: id }, function (err, payment001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when getting payment001mb',
+				error: err
+			});
+		}
 
-        if (!payment001mb) {
-            return res.status(404).json({
-                message: 'No such payment001mb'
-            });
-        }
-        payment001mb.payment = req.body.payment ? req.body.payment : payment001mb.payment;
-        payment001mb.subcid = req.body.subcid.id ? req.body.subcid.id : payment001mb.subcid;
-        payment001mb.subpid = req.body.subpid.id ? req.body.subpid.id : payment001mb.subpid;
-        payment001mb.status = req.body.status ? req.body.status : payment001mb.status;
-        payment001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : payment001mb.inserteduser;
-        payment001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : payment001mb.inserteddatetime;
-        payment001mb.updateduser = req.body.updateduser ? req.body.updateduser : payment001mb.updateduser;
-        payment001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : payment001mb.updateddatetime;
-        payment001mb.save(function (err, payment001mb) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when updating payment001mb.',
-                    error: err
-                });
-            }
+		if (!payment001mb) {
+			return res.status(404).json({
+				message: 'No such payment001mb'
+			});
+		}
+		payment001mb.payment = req.body.payment ? req.body.payment : payment001mb.payment;
+		payment001mb.subcid = req.body.subcid.id ? req.body.subcid.id : payment001mb.subcid;
+		payment001mb.subpid = req.body.subpid.id ? req.body.subpid.id : payment001mb.subpid;
+		payment001mb.status = req.body.status ? req.body.status : payment001mb.status;
+		payment001mb.inserteduser = req.body.inserteduser ? req.body.inserteduser : payment001mb.inserteduser;
+		payment001mb.inserteddatetime = req.body.inserteddatetime ? req.body.inserteddatetime : payment001mb.inserteddatetime;
+		payment001mb.updateduser = req.body.updateduser ? req.body.updateduser : payment001mb.updateduser;
+		payment001mb.updateddatetime = req.body.updateddatetime ? req.body.updateddatetime : payment001mb.updateddatetime;
+		payment001mb.save(function (err, payment001mb) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when updating payment001mb.',
+					error: err
+				});
+			}
 
-            return res.json(payment001mb);
-        });
-    });
+			return res.json(payment001mb);
+		});
+	});
 });
 
 /**
@@ -7403,14 +7401,14 @@ app.put('/api/payment001mb/:id', (req, res) => {
  *         description: failed 
  */
 app.delete('/api/payment001mb/:id', (req, res) => {
-    var id = req.params.id;
-    Payment001mb.findByIdAndRemove(id, function (err, payment001mb) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when deleting the payment001mb.',
-                error: err
-            });
-        }
-        return res.json({ message: 'Deleted successfully' });
-    });
+	var id = req.params.id;
+	Payment001mb.findByIdAndRemove(id, function (err, payment001mb) {
+		if (err) {
+			return res.status(500).json({
+				message: 'Error when deleting the payment001mb.',
+				error: err
+			});
+		}
+		return res.json({ message: 'Deleted successfully' });
+	});
 });

@@ -1,6 +1,6 @@
-var PORT = process.env.PORT ||  8081;
-app.listen(PORT, "0.0.0.0", function() {
-// console.log("Listening on Port 3000");
+var PORT = process.env.PORT || 8081;
+app.listen(PORT, "0.0.0.0", function () {
+    // console.log("Listening on Port 3000");
 });
 
 
@@ -17,4 +17,4 @@ var reqTimer = setTimeout(function wakeUp() {
     //    console.log("WAKE UP DYNO");
     // });
     return reqTimer = setTimeout(wakeUp, 1200000);
- }, 1200000);
+}, 1200000);
