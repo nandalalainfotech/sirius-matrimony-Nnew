@@ -85,8 +85,6 @@ app.get('/', (req, res) => {
 // needed
 //  checking
 
-const __dirname = path.dirname(__filename);
-
 
 app.use(cors());
 dotenv.config();
