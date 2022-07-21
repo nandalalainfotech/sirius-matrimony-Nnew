@@ -56,7 +56,7 @@ const __filename = fileURLToPath(import.meta.url);
 
 
 app.get('/', (req, res) => {
-    res.sendFile('index.html', { root: `${__dirname}/public/dist/sirius` });
+    res.sendFile('index.html', { root: `${__dirname} ./src/public/dist/sirius` });
 });
 
 // if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
