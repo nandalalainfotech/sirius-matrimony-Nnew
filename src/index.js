@@ -50,6 +50,7 @@ const app = express();
 
 // Checking
 const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.resolve(path.dirname('./src/public/dist/sirius'));
 
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 
