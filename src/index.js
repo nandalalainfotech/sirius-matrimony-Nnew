@@ -44,8 +44,6 @@ import videoUpload from "../src/middleware/videoupload.js";
 import audio from "../src/middleware/audio.js";
 
 import {fileURLToPath} from 'url';
-// import { dirname } from '';
-import {dirname} from "express";
 
 const app = express();
 
