@@ -50,7 +50,6 @@ const app = express();
 
 // Checking
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.resolve(path.dirname('./src/public/dist/sirius'));
 
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 
@@ -58,7 +57,6 @@ app.use(express.static(path.resolve(path.dirname('./src/public/dist/sirius'))));
 
 app.use(express.json({ limit: '500mb' }));
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.static(`${__dirname}/public/dist/omega`));
 
 app.get('*', (req, res) => {
 	res.sendFile(path.resolve(path.dirname('./src/public/dist/sirius')));
