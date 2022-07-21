@@ -51,7 +51,7 @@ const app = express();
 // Checking
 const __filename = fileURLToPath(import.meta.url);
 
-// if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
+if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 // // dotenv.config({ path: `${__dirname}/../env/.env.${process.env.NODE_ENV.trim()}` });
 
 
@@ -67,10 +67,10 @@ app.get('/', (req, res) => {
 //     //   res.sendFile('index.html', { root: `${__dirname}/public/dist/omega` });
 //     res.sendFile(path.resolve(path.dirname('./src/public/dist/sirius')));
 // });
-// app.use(express.static("./dist/sirius"));
-// app.get("/*", function (req, res) {
-//     res.sendFile("index.html", { root: "dist/sirius" });
-// });
+app.use(express.static("./dist/sirius"));
+app.get("/*", function (req, res) {
+    res.sendFile("index.html", { root: "dist/sirius" });
+});
 app.use(express.static(path.resolve(path.dirname('./src/public/dist/sirius'))));
 app.use(express.static("./src/index.js"));
 
